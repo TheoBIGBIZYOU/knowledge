@@ -1,19 +1,20 @@
 import * as firebase from 'firebase';
-import '@firebase/auth';
-import '@firebase/firestore';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyCHDs2Lvuhy9qm946ZxwrIQgL4tbqgV4eA',
-  authDomain: 'your-auth-domain-b1234.firebaseapp.com',
+  authDomain: 'knowledge-cf905.firebaseapp.com',
   databaseURL: 'https://your-database-name.firebaseio.com',
   projectId: 'knowledge-cf905',
   storageBucket: 'knowledge-cf905.appspot.com',
-  messagingSenderId: '12345-insert-yourse',
-  appId: '1:535836127704:ios:df23801dcc1242c73942ad',
+  messagingSenderId: '535836127704',
+  appId: '1:535836127704:web:9bd62198c3b4cbac3942ad',
 };
-
-if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
+let app;
+if (firebase.apps.length === 0) {
+    app = firebase.initializeApp(firebaseConfig);
+} else {
+    app = firebase.app();
 }
+const auth = firebase.auth();
 
 export { firebase };
