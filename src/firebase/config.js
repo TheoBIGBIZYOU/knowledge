@@ -3,13 +3,13 @@ import '@firebase/auth';
 import '@firebase/firestore';
 
 const firebaseConfig = {
-  apiKey: 'YOUR_KEY_HERE_AIzaSyAOWH',
+  apiKey: 'AIzaSyCHDs2Lvuhy9qm946ZxwrIQgL4tbqgV4eA',
   authDomain: 'your-auth-domain-b1234.firebaseapp.com',
   databaseURL: 'https://your-database-name.firebaseio.com',
-  projectId: 'your-project-id-1234',
-  storageBucket: 'your-project-id-1234.appspot.com',
+  projectId: 'knowledge-cf905',
+  storageBucket: 'knowledge-cf905.appspot.com',
   messagingSenderId: '12345-insert-yourse',
-  appId: 'insert yours: 1:1234:web:ee873bd1234c0deb7eba61ce',
+  appId: '1:535836127704:ios:df23801dcc1242c73942ad',
 };
 
 if (!firebase.apps.length) {
