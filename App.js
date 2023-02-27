@@ -17,18 +17,18 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {/*{ user ? (*/}
-        {/*  <Stack.Screen name="Home">*/}
-        {/*    {props => <HomeScreen {...props} extraData={user} />}*/}
-        {/*  </Stack.Screen>*/}
-        {/*) : (*/}
-        {/*  <>*/}
-        {/*    <Stack.Screen name="Login" component={LoginScreen} />*/}
-        {/*    <Stack.Screen name="Registration" component={RegistrationScreen} />*/}
-        {/*    <Stack.Screen name="Home" component={HomeScreen} />*/}
+      { user ? (
+          <Stack.Screen name="Home">
+            {props => <HomeScreen {...props} extraData={user} />}
+          </Stack.Screen>
+        ) : (
+          <>
+            <Stack.Screen name="Login" component={LoginScreen} />
+            <Stack.Screen name="Registration" component={RegistrationScreen} />
+            <Stack.Screen name="Home" component={HomeScreen} />
             <Stack.Screen name="FirstConnection" component={FirstConnectionScreen} />
-          {/*</>*/}
-        {/*)}*/}
+          </>
+        )}
       </Stack.Navigator>
     </NavigationContainer>
   );
