@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
-import { Image, Text, TextInput, TouchableOpacity, View } from 'react-native';
-// import {Picker} from '@react-native-picker/picker';
+import React, { useState, useRef } from 'react'
+import { Image, Text, TextInput, TouchableOpacity, View, StyleSheet } from 'react-native';
+import RNPickerSelect from 'react-native-picker-select';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import styles from './styles';
 import {firebase} from '../../firebase/config';
@@ -10,6 +10,7 @@ export default function RegistrationScreen({navigation}) {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
+    const [selectedRole, setSelectedRole] = useState(null);
 
     const onFooterLinkPress = () => {
         navigation.navigate('Login')
@@ -29,6 +30,7 @@ export default function RegistrationScreen({navigation}) {
                     id: uid,
                     email,
                     fullName,
+                    role: selectedRole
                 };
                 const usersRef = firebase.firestore().collection('users')
                 usersRef
@@ -46,6 +48,21 @@ export default function RegistrationScreen({navigation}) {
                 alert(error)
         });
     }
+
+    const pickerSelectStyles = StyleSheet.create({
+
+        inputIOS: {
+            height: 48,
+            borderRadius: 10,
+            borderWidth: 1,
+            borderColor: '#E2E2E2',
+            overflow: 'hidden',
+            backgroundColor: 'white',
+            marginTop: 10,
+            paddingLeft: 16
+        },
+    
+    });
 
     return (
         <View style={styles.container}>
@@ -89,6 +106,24 @@ export default function RegistrationScreen({navigation}) {
                     autoCapitalize="none"
                 />
                 <Text style={styles.label}>Je suis</Text>
+                <View style={styles.select}>
+                    <RNPickerSelect
+                        style={{ ...pickerSelectStyles }}
+                        placeholder={{}}
+                        selectedValue={selectedRole}
+                        onValueChange={(itemValue, itemIndex) => {
+                            // console.log(itemValue)
+                            setSelectedRole(itemValue)
+                            console.log('set value: ' + selectedRole)
+                            console.log('Change value: ' + itemValue)
+                        }
+                        }
+                        items={[
+                            { label: 'Newbie', value: 'newbie' },
+                            { label: 'Mentor', value: 'mentor' }
+                        ]}  
+                    />
+                </View>
                 <TouchableOpacity
                     style={styles.button}
                     onPress={() => onRegisterPress()}>
