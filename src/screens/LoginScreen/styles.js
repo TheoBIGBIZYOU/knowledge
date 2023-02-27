@@ -15,19 +15,30 @@ export default StyleSheet.create({
         alignSelf: "center",
         margin: 30
     },
+    label: {
+        marginLeft: 30,
+        marginRight: 30
+    },
+    resetPassword: {
+        flex: 1,
+        alignItems: "center",
+        marginTop: 24
+    },
     input: {
         height: 48,
-        borderRadius: 5,
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: '#E2E2E2',
         overflow: 'hidden',
         backgroundColor: 'white',
         marginTop: 10,
-        marginBottom: 10,
+        marginBottom: 24,
         marginLeft: 30,
         marginRight: 30,
         paddingLeft: 16
     },
     button: {
-        backgroundColor: '#788eec',
+        backgroundColor: '#5992FF',
         marginLeft: 30,
         marginRight: 30,
         marginTop: 20,
@@ -44,14 +55,20 @@ export default StyleSheet.create({
     footerView: {
         flex: 1,
         alignItems: "center",
-        marginTop: 20
+        marginTop: 45,
+        borderTopWidth: 1,
+        borderColor: '#E2E2E2',
+        marginLeft: 30,
+        marginRight: 30
     },
     footerText: {
         fontSize: 16,
-        color: '#2e2e2d'
+        color: '#2e2e2d',
+        marginBottom: 10,
+        paddingTop: 24
     },
     footerLink: {
-        color: "#788eec",
+        color: "#5992FF",
         fontWeight: "bold",
         fontSize: 16
     }

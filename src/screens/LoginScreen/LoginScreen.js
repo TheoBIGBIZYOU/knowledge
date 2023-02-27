@@ -25,6 +25,7 @@ export default function LoginScreen({navigation}) {
                     .doc(uid)
                     .get()
                     .then(firestoreDocument => {
+                        console.log(firestoreDocument.exists)
                         if (!firestoreDocument.exists) {
                             alert("User does not exist anymore.")
                             return;
@@ -41,6 +42,17 @@ export default function LoginScreen({navigation}) {
             })
     }
 
+    function onResetPress() {
+        firebase
+            .auth()
+            .sendPasswordResetEmail(email)
+            .then(() => {
+                alert("Password reset email send")
+            }).catch((error) => {
+                alert(error)
+            })
+    }
+
     return (
         <View style={styles.container}>
             <KeyboardAwareScrollView
@@ -50,20 +62,20 @@ export default function LoginScreen({navigation}) {
                     style={styles.logo}
                     source={require('../../../assets/icon.png')}
                 />
+                <Text style={styles.label}>Email</Text>
                 <TextInput
                     style={styles.input}
-                    placeholder='E-mail'
                     placeholderTextColor="#aaaaaa"
                     onChangeText={(text) => setEmail(text)}
                     value={email}
                     underlineColorAndroid="transparent"
                     autoCapitalize="none"
                 />
+                <Text style={styles.label}>Mot de passe</Text>
                 <TextInput
                     style={styles.input}
                     placeholderTextColor="#aaaaaa"
                     secureTextEntry
-                    placeholder='Password'
                     onChangeText={(text) => setPassword(text)}
                     value={password}
                     underlineColorAndroid="transparent"
@@ -72,10 +84,14 @@ export default function LoginScreen({navigation}) {
                 <TouchableOpacity
                     style={styles.button}
                     onPress={() => onLoginPress()}>
-                    <Text style={styles.buttonTitle}>Log in</Text>
+                    <Text style={styles.buttonTitle}>Se connecter</Text>
                 </TouchableOpacity>
+                <View style={styles.resetPassword}>
+                    <Text onPress={onResetPress} style={styles.footerLink}>Mot de passe oublié ?</Text>
+                </View>
                 <View style={styles.footerView}>
-                    <Text style={styles.footerText}>Don't have an account? <Text onPress={onFooterLinkPress} style={styles.footerLink}>Sign up</Text></Text>
+                    <Text style={styles.footerText}>Vous n'avez pas de compte ?</Text>
+                    <Text onPress={onFooterLinkPress} style={styles.footerLink}>S'inscrire</Text>
                 </View>
             </KeyboardAwareScrollView>
         </View>

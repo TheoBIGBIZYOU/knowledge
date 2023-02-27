@@ -6,14 +6,26 @@ export default StyleSheet.create({
         alignItems: 'center'
     },
     title: {
-
+        marginHorizontal: 30,
+        fontSize: 34,
+        fontWeight: 'bold'
     },
+    baseline: {
+        marginHorizontal: 30,
+        marginTop: 26,
+        marginBottom: 17
+    },  
     logo: {
         flex: 1,
         height: 120,
         width: 90,
         alignSelf: "center",
         margin: 30
+    },
+    label: {
+        marginLeft: 30,
+        marginRight: 30,
+        fontWeight: 'bold'
     },
     input: {
         height: 48,
