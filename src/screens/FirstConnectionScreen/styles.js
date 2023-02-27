@@ -4,16 +4,20 @@ export default StyleSheet.create({
     container: {
         backgroundColor: '#161241',
         height: "100%",
+        paddingHorizontal: '10%',
+        paddingVertical: '20%',
+        display: 'flex',
+        justifyContent: 'space-between',
+    },
+    topContainer:{
         alignItems: 'center',
-        paddingHorizontal: '10%'
     },
     userImageContainer: {
         position: "relative",
     },
     userImage: {
-        width: 100,
-        height: 100,
-        marginTop: 100,
+        width: 173,
+        height: 173,
         borderRadius: 100,
         overflow: "hidden",
     },
@@ -21,8 +25,8 @@ export default StyleSheet.create({
         position: 'absolute',
         bottom: "-2%",
         right: "2%",
-        width: 25,
-        height: 25,
+        width: 40,
+        height: 40,
         borderRadius: 100,
         overflow: "hidden",
     },
@@ -42,11 +46,47 @@ export default StyleSheet.create({
         marginTop: 30,
         backgroundColor: 'white',
         width: '100%',
-        height: 1
+        height: 2
+    },
+    bottomContainer: {
+        width: '100%',
     },
     textInput: {
         height:200,
+        width: '100%',
         textAlignVertical: 'top',
         color: 'white'
+    },
+    activeView: {
+        display: 'block'
+    },
+    disableView: {
+        display: 'none'
+    },
+    topDescription: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginBottom: 10
+    },
+    descriptionText: {
+        color: 'white',
+    },
+    pictoParagraph: {
+        width: 25,
+        height: 25,
+        marginRight: 5,
+    },
+    pictoCross: {
+        width: 25,
+        height: 25,
+        marginLeft: 5
+    },
+    paragraphView: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        rowGap: 100,
     }
 })
