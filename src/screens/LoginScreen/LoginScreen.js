@@ -5,14 +5,13 @@ import styles from './styles';
 import {firebase} from "../../firebase/config";
 
 export default function LoginScreen({navigation}) {
+
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
 
     const onFooterLinkPress = () => {
         navigation.navigate('Registration')
     }
-
-
 
     const onLoginPress = () => {
         firebase

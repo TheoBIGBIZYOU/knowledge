@@ -34,12 +34,12 @@ export default function RegistrationScreen({navigation}) {
                     .doc(uid)
                     .set(data)
                     .then(() => {
-                        navigation.navigate('Home', {user: data})
+                        navigation.navigate('FirstConnection', {user: data})
                     })
                     .catch((error) => {
                         alert(error)
                     });
-                navigation.navigate('Home', {user: data})
+                navigation.navigate('FirstConnection', {user: data})
             })
             .catch((error) => {
                 alert(error)
