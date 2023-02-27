@@ -9,7 +9,6 @@ export default function RegistrationScreen({navigation}) {
     const [fullName, setFullName] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    const [confirmPassword, setConfirmPassword] = useState('')
     const [selectedRole, setSelectedRole] = useState(null);
 
     const onFooterLinkPress = () => {
@@ -17,8 +16,8 @@ export default function RegistrationScreen({navigation}) {
     }
 
     const onRegisterPress = () => {
-        if (password !== confirmPassword) {
-            alert("Passwords don't match.")
+        if(selectedRole === null) {
+            alert('Veuillez sélectionner un rôle')
             return
         }
         firebase
@@ -26,6 +25,7 @@ export default function RegistrationScreen({navigation}) {
             .createUserWithEmailAndPassword(email, password)
             .then((response) => {
                 const uid = response.user.uid
+                console.log(selectedRole)
                 const data = {
                     id: uid,
                     email,
@@ -96,26 +96,17 @@ export default function RegistrationScreen({navigation}) {
                     underlineColorAndroid="transparent"
                     autoCapitalize="none"
                 />
-                <Text style={styles.label}>Confirmer le mot de passe</Text>
-                <TextInput
-                    style={styles.input}
-                    secureTextEntry
-                    onChangeText={(text) => setConfirmPassword(text)}
-                    value={confirmPassword}
-                    underlineColorAndroid="transparent"
-                    autoCapitalize="none"
-                />
                 <Text style={styles.label}>Je suis</Text>
                 <View style={styles.select}>
                     <RNPickerSelect
                         style={{ ...pickerSelectStyles }}
-                        placeholder={{}}
+                        placeholder={{
+                            label: 'Veuillez selectionner un rôle',
+                            value: null
+                        }}
                         selectedValue={selectedRole}
                         onValueChange={(itemValue, itemIndex) => {
-                            // console.log(itemValue)
                             setSelectedRole(itemValue)
-                            console.log('set value: ' + selectedRole)
-                            console.log('Change value: ' + itemValue)
                         }
                         }
                         items={[
