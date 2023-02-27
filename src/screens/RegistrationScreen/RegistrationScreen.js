@@ -25,7 +25,6 @@ export default function RegistrationScreen({navigation}) {
             .createUserWithEmailAndPassword(email, password)
             .then((response) => {
                 const uid = response.user.uid
-                console.log(selectedRole)
                 const data = {
                     id: uid,
                     email,

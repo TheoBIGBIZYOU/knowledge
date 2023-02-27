@@ -7,6 +7,7 @@ import crossPicto from '../../../assets/img/picto/cross.png'
 import paragraphPicto from '../../../assets/img/picto/paragraph.png'
 import { firebase } from "../../firebase/config";
 import ButtonComponents from "../components/ButtonComponents/ButtonComponents";
+import {merge} from "yarn/lib/cli";
 
 const camPictoInfo = Image.resolveAssetSource(camPicto).uri;
 const crossPictoInfo = Image.resolveAssetSource(crossPicto).uri;
@@ -22,19 +23,32 @@ export default function FirstConnectionScreen(props) {
     const [count, setCount] = React.useState(0);
 
     const user = firebase.auth().currentUser;
-    const userInfo = firebase.firestore().collection('users')
 
-    function setDescr() {
-        setNextPart(true);
-        console.log(description);
+    function stateEtape() {
+        setNextPart(!nextPart);
+        console.log("salut");
+        if(nextPart === true){
+            console.log("je rentre")
+            const data = {
+                description: description,
+            };
+
+            firebase.firestore().collection('users')
+                .doc(user.uid)
+                .set(data, {merge: true})
+                .then(() => {
+                    console.log("c'est bon")
+                })
+                .catch((error) => {
+                    alert(error)
+                });
+        }
+
     }
 
     function resetDescription() {
         setCount(0);
         setDescription("");
-        console.log("ici");
-        console.log(count);
-        console.log(description);
     }
 
     return (
@@ -49,7 +63,6 @@ export default function FirstConnectionScreen(props) {
                             aspect: [4, 3],
                             quality: 1,
                         });
-                        console.log(user);
                         if (!result.cancelled) {
                             setPhoto(result.assets[0].uri);
                         }
@@ -91,7 +104,10 @@ export default function FirstConnectionScreen(props) {
                             maxLength={250}
                             placeholderTextColor='white'
                             value={description}
-                            onChangeText={(text) => setCount(text.length)}
+                            onChangeText={(text) => {
+                                setDescription(text);
+                                setCount(text.length)
+                            }}
                             placeholder="Entrer votre description..." />
                     </View>
 
@@ -99,8 +115,12 @@ export default function FirstConnectionScreen(props) {
                         <Text style={styles.subTitle}>test</Text>
                     </View>
                 </View>
-                <TouchableOpacity style={styles.bottomContainer} onPress={() => setDescr()}>
+                <TouchableOpacity style={nextPart ? styles.disableView : null} onPress={() => stateEtape()}>
                     <ButtonComponents text={'Continuer'} />
+                </TouchableOpacity>
+                <TouchableOpacity style={nextPart ? null : styles.disableView}>
+                    <ButtonComponents text={'Valider'} />
+                    <Text style={styles.textUnderButton} onPress={() => stateEtape()}>Retour</Text>
                 </TouchableOpacity>
             </View>
         </TouchableWithoutFeedback>

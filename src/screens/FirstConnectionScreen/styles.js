@@ -88,5 +88,11 @@ export default StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         rowGap: 100,
+    },
+    textUnderButton: {
+        color: 'white',
+        marginTop: 15,
+        fontSize: 14,
+        textAlign: 'center'
     }
 })
