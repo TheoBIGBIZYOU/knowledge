@@ -18,17 +18,12 @@
     "firebase": "^9.17.1",
     "react": "18.1.0",
     "react-native": "0.70.5",
-<<<<<<< HEAD
     "react-native-image-picker": "^5.1.0",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
-    "yarn": "^1.22.19",
-    "expo-image-picker": "~13.3.1"
-=======
+    "expo-image-picker": "~13.3.1",
     "react-native-gesture-handler": "~2.8.0",
-    "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-picker-select": "^8.0.4",
     "yarn": "^1.22.19"
->>>>>>> login-feature
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"
