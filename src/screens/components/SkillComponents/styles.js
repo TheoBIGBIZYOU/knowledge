@@ -8,6 +8,7 @@ export default StyleSheet.create({
         fontSize: 10,
         borderWidth: 1,
         margin: (10 / 2),
+        position: 'relative'
     },
     skillComponentsEnable: {
         borderColor: '#fff',
@@ -23,5 +24,5 @@ export default StyleSheet.create({
         borderColor: '#5992FF',
         backgroundColor: '#5992FF',
         color: '#fff'
-    }
+    },
 })

@@ -1,20 +1,18 @@
 import React, { useState } from 'react';
 import { Image, Text, View, Pressable, TextInput, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import styles from './styles';
+import Svg, {Circle, Path} from "react-native-svg";
 import * as ImagePicker from 'expo-image-picker';
-import camPicto from '../../../assets/img/picto/cam.png'
-import crossPicto from '../../../assets/img/picto/cross.png'
-import paragraphPicto from '../../../assets/img/picto/paragraph.png'
 import { firebase } from "../../firebase/config";
 import ButtonComponents from "../components/ButtonComponents/ButtonComponents";
 import RNPickerSelect from "react-native-picker-select";
 import skillJSON from '../../../assets/json/skills.json';
 import {Platform} from 'react-native';
+import SkillComponents from "../components/SkillComponents/SkillComponents";
+import HorizontalBar from "../components/HorizontalBar/HorizontalBar";
 
 
-const camPictoInfo = Image.resolveAssetSource(camPicto).uri;
-const crossPictoInfo = Image.resolveAssetSource(crossPicto).uri;
-const paragraphPictoInfo = Image.resolveAssetSource(paragraphPicto).uri;
+import { onSnapshot }from 'firebase/firestore'
 
 const imagetest = "https://cdn.smehost.net/sonymusicfr-frprod/wp-content/uploads/2022/02/Vald.jpeg";
 
@@ -27,7 +25,18 @@ export default function FirstConnectionScreen({navigation}) {
     const [skill, setSkill] = useState([]);
     const [selectedSkill, setSelectedSkill] = useState(null);
 
+    const [userInfo, setUserInfo] = useState([])
+
+    //user info
     const user = firebase.auth().currentUser;
+    const dataUser = firebase.firestore().collection("users").where("id", "==", user.uid)
+    const unSubscribe = onSnapshot(dataUser, (snapshot) => {
+        let results = []
+        snapshot.docs.forEach(userInfo => {
+            results.push({...userInfo.data(), id: userInfo.id})
+        })
+        setUserInfo(results[0])
+    })
 
 
     async function uploadImage() {
@@ -86,12 +95,37 @@ export default function FirstConnectionScreen({navigation}) {
         setSkill([]);
     }
 
+    const pickerStyle = {
+        inputIOS: {
+            paddingVertical: 5,
+            paddingHorizontal: 22,
+            borderRadius: 100,
+            fontSize: 14,
+            backgroundColor: '#5992FF',
+            color: '#fff',
+            textAlign: 'center',
+        },
+        inputAndroid: {
+            paddingVertical: 5,
+            paddingHorizontal: 22,
+            borderRadius: 100,
+            fontSize: 14,
+            backgroundColor: '#5992FF',
+            color: '#fff'
+        },
+        placeholder: {
+            color: "white",
+            fontSize: 14,
+        },
+    };
+
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}
             accessible={false}>
             <View style={styles.container}>
                 <View style={styles.topContainer}>
                     <Pressable style={styles.userImageContainer} onPress={async () => {
+
                         let result = await ImagePicker.launchImageLibraryAsync({
                             mediaTypes: ImagePicker.MediaTypeOptions.All,
                             allowsEditing: true,
@@ -107,30 +141,64 @@ export default function FirstConnectionScreen({navigation}) {
                             style={styles.userImage}
                             source={photo ? { uri: photo } : { uri: imagetest }}
                         />
-                        <Image
+                        <Svg
                             style={styles.pictoChangePhoto}
-                            source={{ uri: camPictoInfo }}
-                        />
+                            width={34}
+                            height={34}
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <Circle
+                                cx={17}
+                                cy={17}
+                                r={16}
+                                fill="#D9D9D9"
+                                stroke="#161241"
+                                strokeWidth={2}
+                            />
+                            <Path
+                                d="M17 21.125c.938 0 1.735-.328 2.391-.985.657-.656.985-1.453.984-2.39 0-.938-.328-1.735-.985-2.391-.656-.656-1.453-.985-2.39-.984-.938 0-1.735.328-2.391.985-.656.656-.985 1.453-.984 2.39 0 .938.328 1.735.985 2.391.656.657 1.453.985 2.39.984Zm-6 2.625c-.412 0-.766-.147-1.06-.441a1.442 1.442 0 0 1-.44-1.059v-9c0-.412.147-.766.441-1.06.294-.294.647-.44 1.059-.44h2.363l.937-1.012c.137-.163.303-.285.497-.367.194-.081.397-.122.608-.121h3.188c.212 0 .416.04.61.122.194.082.36.204.496.366l.938 1.012H23c.413 0 .766.147 1.06.441.294.294.44.647.44 1.059v9c0 .413-.147.766-.441 1.06-.294.294-.647.44-1.059.44H11Z"
+                                fill="#000"
+                            />
+                        </Svg>
                     </Pressable>
-                    <Text style={styles.userName}>Valentin</Text>
+                    <Text style={styles.userName}>{userInfo.fullName}</Text>
 
                     <View class='firstPart' style={nextPart ? styles.disableView : null}>
                         <Text style={styles.subTitle}>Merci d’entrer une description de vous, vos compétences, votre projet et ce sur quoi votre mentor peut vous aider.</Text>
-                        <View style={styles.horizontalBar} />
+                        <HorizontalBar />
                         <View style={styles.topDescription}>
                             <View style={styles.paragraphView}>
-                                <Image
+                                <Svg
+                                    width={24}
+                                    height={24}
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
                                     style={styles.pictoParagraph}
-                                    source={{ uri: paragraphPictoInfo }}
-                                />
+                                >
+                                    <Path
+                                        d="M13 13.5H3a1 1 0 0 0 0 2h10a1 1 0 0 0 0-2Zm8-5H3a1 1 0 0 0 0 2h18a1 1 0 0 0 0-2Z"
+                                        fill="#fff"
+                                    />
+                                </Svg>
                                 <Text style={styles.descriptionText}>{count}/250</Text>
                             </View>
                             <View style={styles.paragraphView}>
                                 <Text style={styles.descriptionText} onPress={() => resetDescription()}>Supprimer tout</Text>
-                                <Image
+                                <Svg
+                                    width={14}
+                                    height={14}
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
                                     style={styles.pictoCross}
-                                    source={{ uri: crossPictoInfo }}
-                                />
+                                >
+                                    <Path
+                                        fillRule="evenodd"
+                                        clipRule="evenodd"
+                                        d="M10.996 3.763a.536.536 0 1 0-.758-.76L7 6.241 3.763 3.003a.537.537 0 1 0-.76.76L6.241 7l-3.238 3.237a.537.537 0 0 0 .76.76L7 7.758l3.238 3.237a.537.537 0 0 0 .758-.76L7.76 7l3.237-3.237Z"
+                                        fill="#fff"
+                                    />
+                                </Svg>
                             </View>
                         </View>
                         <TextInput
@@ -148,49 +216,90 @@ export default function FirstConnectionScreen({navigation}) {
 
                     <View style={nextPart ? null : styles.disableView} class="secondPart">
                         <Text style={styles.subTitle}>Merci d’indiquer vos compétences, afin de trouver les mentors correspondant à votre recherche.</Text>
-                        <View style={styles.horizontalBar} />
+                        <HorizontalBar />
                         <View style={styles.topDescription}>
                             <View style={styles.paragraphView}>
-                                <Text style={styles.descriptionText}>Appuyez pour sélectionner</Text>
+                                <Text style={styles.descriptionText}>Appuyez pour supprimer</Text>
                             </View>
                             <View style={styles.paragraphView}>
                                 <Text style={styles.descriptionText} onPress={() => resetSkill()}>Supprimer tout</Text>
-                                <Image
+                                <Svg
+                                    width={14}
+                                    height={14}
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
                                     style={styles.pictoCross}
-                                    source={{ uri: crossPictoInfo }}
-                                />
+                                >
+                                    <Path
+                                        fillRule="evenodd"
+                                        clipRule="evenodd"
+                                        d="M10.996 3.763a.536.536 0 1 0-.758-.76L7 6.241 3.763 3.003a.537.537 0 1 0-.76.76L6.241 7l-3.238 3.237a.537.537 0 0 0 .76.76L7 7.758l3.238 3.237a.537.537 0 0 0 .758-.76L7.76 7l3.237-3.237Z"
+                                        fill="#fff"
+                                    />
+                                </Svg>
                             </View>
                         </View>
-                        <View style={styles.topDescription}>
+                        <View style={styles.skillList}>
                             {
                                 skill.map((item) => {
                                     return (
-                                        <Text key={item} style={{color: 'white'}}>{item}</Text>
+                                        <TouchableOpacity key={item} style={styles.skillItem}>
+                                            <SkillComponents text={item} state={'enable'} onPress={()=>{
+                                                let newSkills = [];
+                                                newSkills.push(...skill);
+                                                let index = newSkills.indexOf(item);
+                                                newSkills.splice(index,1);
+                                                setSkill(newSkills);
+                                            }}/>
+                                        </TouchableOpacity>
                                     )
                                 })
                             }
-                            <RNPickerSelect
-                                placeholder={{
-                                    label: 'Ajouter +',
-                                    value: null
-                                }}
-                                selectedValue={selectedSkill}
-                                onValueChange={(itemValue, itemIndex) => {
-                                    if(Platform.OS !== 'ios'){
-                                        setSkill([...skill,selectedSkill])
+                        </View>
+
+                        <RNPickerSelect
+                            style={pickerStyle}
+                            placeholder={{
+                                label: 'Ajouter +',
+                                value: null
+                            }}
+                            selectedValue={selectedSkill}
+                            onValueChange={(itemValue, itemIndex) => {
+                                if(Platform.OS !== 'ios'){
+                                    if(selectedSkill === null){
+                                        alert('Veuillez selectionner une compétence')
+                                    }
+                                    else if(skill.includes(selectedSkill)){
+                                        setSelectedSkill(null)
+                                        alert('Cette compétence a déjà été selectionnée')
                                     }
                                     else{
-                                        setSelectedSkill(itemValue);
+                                        setSkill([...skill,selectedSkill])
+                                        setSelectedSkill(null)
                                     }
                                 }
+                                else{
+                                    setSelectedSkill(itemValue);
                                 }
-                                onDonePress={ () => {
+                            }
+                            }
+                            onDonePress={ () => {
+                                if(selectedSkill === null){
+                                    alert('Veuillez selectionner une compétence')
+                                }
+                                else if(skill.includes(selectedSkill)){
+                                    setSelectedSkill(null)
+                                    alert('Cette compétence a déjà été selectionnée')
+                                }
+                                else{
                                     setSkill([...skill,selectedSkill])
+                                    setSelectedSkill(null)
                                 }
-                                }
-                                items={skillJSON}
-                            />
-                        </View>
+                            }
+                            }
+                            value={selectedSkill}
+                            items={skillJSON}
+                        />
                     </View>
                 </View>
                 <TouchableOpacity style={nextPart ? styles.disableView : null} onPress={() => updateDescription()}>
