@@ -7,7 +7,6 @@ import crossPicto from '../../../assets/img/picto/cross.png'
 import paragraphPicto from '../../../assets/img/picto/paragraph.png'
 import { firebase } from "../../firebase/config";
 import ButtonComponents from "../components/ButtonComponents/ButtonComponents";
-import {merge} from "yarn/lib/cli";
 
 const camPictoInfo = Image.resolveAssetSource(camPicto).uri;
 const crossPictoInfo = Image.resolveAssetSource(crossPicto).uri;
