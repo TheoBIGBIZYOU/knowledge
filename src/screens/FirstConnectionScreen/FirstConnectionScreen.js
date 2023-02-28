@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import { Image, Text, View, Pressable, TextInput, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import styles from './styles';
 import * as ImagePicker from 'expo-image-picker';
@@ -7,7 +7,10 @@ import crossPicto from '../../../assets/img/picto/cross.png'
 import paragraphPicto from '../../../assets/img/picto/paragraph.png'
 import { firebase } from "../../firebase/config";
 import ButtonComponents from "../components/ButtonComponents/ButtonComponents";
-import {merge} from "yarn/lib/cli";
+import RNPickerSelect from "react-native-picker-select";
+import skillJSON from '../../../assets/json/skills.json';
+import {Platform} from 'react-native';
+
 
 const camPictoInfo = Image.resolveAssetSource(camPicto).uri;
 const crossPictoInfo = Image.resolveAssetSource(crossPicto).uri;
@@ -15,40 +18,72 @@ const paragraphPictoInfo = Image.resolveAssetSource(paragraphPicto).uri;
 
 const imagetest = "https://cdn.smehost.net/sonymusicfr-frprod/wp-content/uploads/2022/02/Vald.jpeg";
 
-export default function FirstConnectionScreen(props) {
+export default function FirstConnectionScreen({navigation}) {
 
     const [photo, setPhoto] = useState(imagetest);
     const [nextPart, setNextPart] = useState(false);
     const [description, setDescription] = useState(null);
-    const [count, setCount] = React.useState(0);
+    const [count, setCount] = useState(0);
+    const [skill, setSkill] = useState([]);
+    const [selectedSkill, setSelectedSkill] = useState(null);
 
     const user = firebase.auth().currentUser;
 
-    function stateEtape() {
-        setNextPart(!nextPart);
-        console.log("salut");
-        if(nextPart === true){
-            console.log("je rentre")
-            const data = {
-                description: description,
-            };
 
-            firebase.firestore().collection('users')
-                .doc(user.uid)
-                .set(data, {merge: true})
-                .then(() => {
-                    console.log("c'est bon")
-                })
-                .catch((error) => {
-                    alert(error)
-                });
+    async function uploadImage() {
+        const response = await fetch(photo);
+        const blob = await response.blob();
+        const filename = photo.substring(photo.lastIndexOf('/')+1);
+        var ref = firebase.storage().ref().child(filename).put(blob);
+
+        try {
+            await ref;
         }
-
+        catch(e){
+            console.log(e);
+        }
     }
 
+    function updateDescription() {
+        firebase.firestore().collection('users')
+            .doc(user.uid)
+            .set({description: description}, {merge: true})
+            .then(() => {
+                setNextPart(!nextPart);
+            })
+            .catch((error) => {
+                alert(error)
+            });
+    }
+
+    function updateSkillAndPhoto() {
+        const data = {
+            image : photo.substring(photo.lastIndexOf('/')+1),
+            skills : skill,
+        };
+
+        //upload image
+        uploadImage();
+
+        firebase.firestore().collection('users')
+            .doc(user.uid)
+            .set(data, {merge: true})
+            .then(() => {
+                navigation.navigate('Home', {user})
+            })
+            .catch((error) => {
+                alert(error)
+            });
+    }
+
+    //compte le nombre de character dans la description
     function resetDescription() {
         setCount(0);
         setDescription("");
+    }
+
+    function resetSkill(){
+        setSkill([]);
     }
 
     return (
@@ -112,15 +147,57 @@ export default function FirstConnectionScreen(props) {
                     </View>
 
                     <View style={nextPart ? null : styles.disableView} class="secondPart">
-                        <Text style={styles.subTitle}>test</Text>
+                        <Text style={styles.subTitle}>Merci d’indiquer vos compétences, afin de trouver les mentors correspondant à votre recherche.</Text>
+                        <View style={styles.horizontalBar} />
+                        <View style={styles.topDescription}>
+                            <View style={styles.paragraphView}>
+                                <Text style={styles.descriptionText}>Appuyez pour sélectionner</Text>
+                            </View>
+                            <View style={styles.paragraphView}>
+                                <Text style={styles.descriptionText} onPress={() => resetSkill()}>Supprimer tout</Text>
+                                <Image
+                                    style={styles.pictoCross}
+                                    source={{ uri: crossPictoInfo }}
+                                />
+                            </View>
+                        </View>
+                        <View style={styles.topDescription}>
+                            {
+                                skill.map((item) => {
+                                    return (
+                                        <Text key={item} style={{color: 'white'}}>{item}</Text>
+                                    )
+                                })
+                            }
+                            <RNPickerSelect
+                                placeholder={{
+                                    label: 'Ajouter +',
+                                    value: null
+                                }}
+                                selectedValue={selectedSkill}
+                                onValueChange={(itemValue, itemIndex) => {
+                                    if(Platform.OS !== 'ios'){
+                                        setSkill([...skill,selectedSkill])
+                                    }
+                                    else{
+                                        setSelectedSkill(itemValue);
+                                    }
+                                }
+                                }
+                                onDonePress={ () => {
+                                    setSkill([...skill,selectedSkill])
+                                }
+                                }
+                                items={skillJSON}
+                            />
+                        </View>
                     </View>
                 </View>
-                <TouchableOpacity style={nextPart ? styles.disableView : null} onPress={() => stateEtape()}>
+                <TouchableOpacity style={nextPart ? styles.disableView : null} onPress={() => updateDescription()}>
                     <ButtonComponents text={'Continuer'} />
                 </TouchableOpacity>
-                <TouchableOpacity style={nextPart ? null : styles.disableView}>
+                <TouchableOpacity style={nextPart ? null : styles.disableView} onPress={() => updateSkillAndPhoto()}>
                     <ButtonComponents text={'Valider'} />
-                    <Text style={styles.textUnderButton} onPress={() => stateEtape()}>Retour</Text>
                 </TouchableOpacity>
             </View>
         </TouchableWithoutFeedback>
