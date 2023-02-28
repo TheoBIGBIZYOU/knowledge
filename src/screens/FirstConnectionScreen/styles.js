@@ -23,12 +23,8 @@ export default StyleSheet.create({
     },
     pictoChangePhoto: {
         position: 'absolute',
-        bottom: "-2%",
-        right: "2%",
-        width: 40,
-        height: 40,
-        borderRadius: 100,
-        overflow: "hidden",
+        bottom: '-2%',
+        right: "5%",
     },
     userName: {
         color: 'white',
@@ -41,12 +37,6 @@ export default StyleSheet.create({
         color: 'white',
         marginTop: 20,
         textAlign: 'center'
-    },
-    horizontalBar: {
-        marginTop: 30,
-        backgroundColor: 'white',
-        width: '100%',
-        height: 2
     },
     bottomContainer: {
         width: '100%',
@@ -94,5 +84,14 @@ export default StyleSheet.create({
         marginTop: 15,
         fontSize: 14,
         textAlign: 'center'
+    },
+    skillList: {
+        display: 'flex',
+        flexWrap: 'wrap',
+        flexDirection: 'row',
+    },
+    skillItem: {
+        marginRight: 10,
+        marginBottom: 10,
     }
 })

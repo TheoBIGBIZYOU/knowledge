@@ -1,11 +1,16 @@
 import React from 'react'
-import { Text,View } from 'react-native'
+import {Text, TouchableOpacity, View} from 'react-native'
 import styles from './styles';
+import Svg, {Path} from "react-native-svg";
 
 export default function SkillComponents(props) {
     return (
-        <View style={[styles.skillComponents, props.etat === 'selected' ? styles.skillComponentsSelected : props.etat === 'enable' ? styles.skillComponentsEnable : props.etat === 'disable' ? styles.skillComponentsDisable : null]}>
+        <TouchableOpacity
+            onPress={() =>{
+                props.onPress();
+            }}
+            style={[styles.skillComponents, props.state === 'selected' ? styles.skillComponentsSelected : props.state === 'enable' ? styles.skillComponentsEnable : props.state === 'disable' ? styles.skillComponentsDisable : null]}>
             <Text>{props.text}</Text>
-        </View>
+        </TouchableOpacity>
     )
 }
