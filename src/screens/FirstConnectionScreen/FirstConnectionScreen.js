@@ -12,6 +12,8 @@ import SkillComponents from "../components/SkillComponents/SkillComponents";
 import HorizontalBar from "../components/HorizontalBar/HorizontalBar";
 
 
+import { onSnapshot }from 'firebase/firestore'
+
 const imagetest = "https://cdn.smehost.net/sonymusicfr-frprod/wp-content/uploads/2022/02/Vald.jpeg";
 
 export default function FirstConnectionScreen({navigation}) {
@@ -23,7 +25,18 @@ export default function FirstConnectionScreen({navigation}) {
     const [skill, setSkill] = useState([]);
     const [selectedSkill, setSelectedSkill] = useState(null);
 
+    const [userInfo, setUserInfo] = useState([])
+
+    //user info
     const user = firebase.auth().currentUser;
+    const dataUser = firebase.firestore().collection("users").where("id", "==", user.uid)
+    const unSubscribe = onSnapshot(dataUser, (snapshot) => {
+        let results = []
+        snapshot.docs.forEach(userInfo => {
+            results.push({...userInfo.data(), id: userInfo.id})
+        })
+        setUserInfo(results[0])
+    })
 
 
     async function uploadImage() {
@@ -112,6 +125,7 @@ export default function FirstConnectionScreen({navigation}) {
             <View style={styles.container}>
                 <View style={styles.topContainer}>
                     <Pressable style={styles.userImageContainer} onPress={async () => {
+
                         let result = await ImagePicker.launchImageLibraryAsync({
                             mediaTypes: ImagePicker.MediaTypeOptions.All,
                             allowsEditing: true,
@@ -148,7 +162,7 @@ export default function FirstConnectionScreen({navigation}) {
                             />
                         </Svg>
                     </Pressable>
-                    <Text style={styles.userName}>Valentin</Text>
+                    <Text style={styles.userName}>{userInfo.fullName}</Text>
 
                     <View class='firstPart' style={nextPart ? styles.disableView : null}>
                         <Text style={styles.subTitle}>Merci d’entrer une description de vous, vos compétences, votre projet et ce sur quoi votre mentor peut vous aider.</Text>
