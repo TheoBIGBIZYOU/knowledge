@@ -4,8 +4,8 @@ import styles from './styles';
 
 export default function SkillComponents(props) {
     return (
-        <View style={[styles.skillComponents, props.etat === 'selected' ? styles.skillComponentsSelected : props.etat === 'enable' ? styles.skillComponentsEnable : props.etat === 'disable' ? styles.skillComponentsDisable : null]}>
-            <Text>{props.text}</Text>
+        <View style={[styles.skillComponents, props.state === 'selected' ? styles.skillComponentsSelected : props.state === 'enable' ? styles.skillComponentsEnable : props.state === 'disable' ? styles.skillComponentsDisable : null]}>
+            <Text style={props.state === 'enable' ? {color : 'black'} : {color : 'white'}}>{props.text}</Text>
         </View>
     )
 }

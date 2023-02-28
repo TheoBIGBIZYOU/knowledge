@@ -30,9 +30,15 @@ export default StyleSheet.create({
         borderRadius: 12,
         paddingVertical: 50,
         paddingHorizontal: 50,
-        width: '85%',
         alignItems: 'center',
     },
+    cardShadow: {
+        shadowColor: '#000',
+        shadowOffset: {width: 0, height: 1},
+        shadowOpacity: 0.2,
+        shadowRadius: 1.41,
+        elevation: 2
+    },  
     shadow: {
         shadowOffset: {width: 0, height: 4},  
         shadowColor: '#000',  
@@ -43,7 +49,7 @@ export default StyleSheet.create({
         width: 150,
         height: 150,
         borderRadius: 100,
-        overflow: 'hidden'
+        overflow: 'hidden',
     },
     name: {
         marginTop: 28,
@@ -62,5 +68,35 @@ export default StyleSheet.create({
     descr: {
         marginVertical: 40,
         fontSize: 12,
+    },
+    skills: {
+        display: 'flex',
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        padding: (10 / -2),
+    },
+    actions: {
+        position: 'absolute',
+        bottom: 0,
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 35
+    },
+    actionsButton: {
+        width: 55,
+        height: 55,
+        backgroundColor: '#fff',
+        borderRadius: 100,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    actionSeeButton: {
+        width: 66,
+        height: 66,
+        marginHorizontal: 26
     }
 })

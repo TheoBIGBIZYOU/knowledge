@@ -6,7 +6,8 @@ export default StyleSheet.create({
         paddingHorizontal: 22,
         borderRadius: 100,
         fontSize: 10,
-        borderWidth: 1
+        borderWidth: 1,
+        margin: (10 / 2),
     },
     skillComponentsEnable: {
         borderColor: '#fff',
