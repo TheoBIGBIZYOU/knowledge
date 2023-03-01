@@ -10,44 +10,110 @@ import { onSnapshot } from "firebase/firestore";
 export default function HomeScreen(props) {
     const [profiles, setProfiles] = useState([]);
     const [imageUrl, setImageUrl] = useState([]);
+    const [matches, setMatches] = useState([]);
+    const [passes, setPasses] = useState([]);
+    const [userRole, setUserRole] = useState('');
     const swipeRef = useRef(null);
-
+    const user = firebase.auth().currentUser;    
+    
     useEffect(() => {
-        const dataUser = firebase.firestore().collection("users").where("role", "==", "mentor")
-        const unSubscribe = onSnapshot(dataUser, (snapshot) => {
-            let results = []
-            let resultsImage = []
-            snapshot.docs.forEach((profil, index) => {
-                // console.log(profil.data())
-                //Get image profil
-                firebase.storage()
-                    .ref('/' + profil.data().image) //name in storage in firebase console
-                    .getDownloadURL()
-                    .then((url) => {
-                        resultsImage.push(url)
-                        setImageUrl(resultsImage.reverse());
+        onSnapshot(firebase.firestore().collection("users").where("id", "==", user.uid), (snapshot) => {
+            snapshot.docs.forEach(user => {
+                setUserRole(user.data().role);
+                if(user.data().role == 'newbie') {
+                    onSnapshot(firebase.firestore().collection("users").where("role", "==", "mentor"), (snapshot) => {
+                        let results = []
+                        let resultsImage = []
+                        snapshot.docs.forEach((profil, index) => {
+                            //Get image profil
+                            firebase.storage()
+                                .ref('/' + profil.data().image) //name in storage in firebase console
+                                .getDownloadURL()
+                                .then((url) => {
+                                    resultsImage.push(url)
+                                    setImageUrl(resultsImage.reverse());
+                                })
+                                .catch((e) => console.log('Errors while downloading => ', e));
+                            //Push profil to const
+                            results.push({ ...profil.data(), id: profil.id })
+                        })
+                        setProfiles(results);                        
                     })
-                    .catch((e) => console.log('Errors while downloading => ', e));
-                //Push profil to const
-                results.push({ ...profil.data(), id: profil.id })
+                } else {
+                    let query = firebase.firestore().collection("users")
+                    query = query.where("role", "==", "newbie") 
+                    query = query.where("matches", 'array-contains', user.data().id) 
+                    onSnapshot(query, (snapshot) => {
+                        let results = []
+                        let resultsImage = []
+                        snapshot.docs.forEach((profil, index) => {
+                            //Get image profil
+                            firebase.storage()
+                                .ref('/' + profil.data().image) //name in storage in firebase console
+                                .getDownloadURL()
+                                .then((url) => {
+                                    resultsImage.push(url)
+                                    setImageUrl(resultsImage.reverse());
+                                })
+                                .catch((e) => console.log('Errors while downloading => ', e));
+                            //Push profil to const
+                            results.push({ ...profil.data(), id: profil.id })
+                        })
+                        setProfiles(results);
+                    })      
+                }
             })
-            setProfiles(results);
-            // console.log(imageUrl);
         })
+
     }, []);
 
-    const swipeRight = async (cardIndex) => {
+    const swipeLeft = async (cardIndex) => {
         if(!profiles[cardIndex]) return;
 
         const userSwiped = profiles[cardIndex];
-        console.log(userSwiped.id);
+
+        setPasses(prevPass => [...prevPass, userSwiped.id]);
+
+        const data = {
+            passes : passes,
+        };
+
+        firebase.firestore().collection('users')
+        .doc(user.uid)
+        .set(data, {merge: true})
+        .then(() => {})
+        .catch((error) => {
+            alert(error)
+        });
+    }
+
+    const swipeRight = (cardIndex) => {
+        if(!profiles[cardIndex]) return;
+
+        const userSwiped = profiles[cardIndex];
+
+        setMatches(prevMatch => [...prevMatch, userSwiped.id]);
+        console.log(matches);
+        
+        const data = {
+            matches : matches,
+        };
+
+        firebase.firestore().collection('users')
+        .doc(user.uid)
+        .set(data, {merge: true})
+        .then(() => {})
+        .catch((error) => {
+            alert(error)
+        });        
+
     }
 
     return (
         <SafeAreaView>
             <View style={styles.container}>
                 <View style={styles.background}></View>
-                <Text style={styles.title}>Cherche ton mentor</Text>
+                {userRole === 'newbie' ? <Text style={styles.title}>Cherche ton mentor</Text> : <Text style={styles.title}>Choisis ton apprenti</Text>}       
                 <Swiper
                     ref={swipeRef}
                     containerStyle={{ backgroundColor: 'transparent' }}
@@ -56,10 +122,14 @@ export default function HomeScreen(props) {
                     cardIndex={0}
                     animateCardOpacity
                     verticalSwipe={false}
+                    onSwipedLeft={(cardIndex) => {
+                        swipeLeft(cardIndex);
+                    }}
                     onSwipedRight={(cardIndex) => {
                         swipeRight(cardIndex);
                     }}
                     renderCard={(card, index) => card ? (
+
                         <View key={card.id}
                             style={[styles.card, styles.cardShadow]}
                         >
@@ -136,8 +206,8 @@ export default function HomeScreen(props) {
                             />
                         </Svg>
                     </TouchableOpacity>
-                    <TouchableOpacity style={[styles.actionsButton, styles.actionSeeButton, styles.shadow]} onPress={()=>{
-                        // console.log(imageUrl)
+                    <TouchableOpacity style={[styles.actionsButton, styles.actionSeeButton, styles.shadow]} onPress={(cardIndex)=>{
+                        console.log(profiles[cardIndex]);
                     }}>
                         <Svg
                             width={30}
