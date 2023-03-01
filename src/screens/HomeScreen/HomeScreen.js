@@ -15,30 +15,26 @@ export default function HomeScreen({navigation, props}) {
     const [userRole, setUserRole] = useState('');
     const [currentUserIndex, setCurrentUserIndex] = useState(0);
     const swipeRef = useRef(null);
-    const user = firebase.auth().currentUser;    
-    
+    const user = firebase.auth().currentUser;
+
     useEffect(() => {
         onSnapshot(firebase.firestore().collection("users").where("id", "==", user.uid), (snapshot) => {
             snapshot.docs.forEach(user => {
                 setUserRole(user.data().role);
-                if(user.data().role == 'newbie') {
-                    onSnapshot(firebase.firestore().collection("users").where("role", "==", "mentor"), (snapshot) => {
+                if(user.data().role === 'newbie') {
+                    let resultsImage = []
+                    onSnapshot(firebase.firestore().collection("users").where("role", "==", "mentor"), async(snapshot) => {
                         let results = []
-                        let resultsImage = []
-                        snapshot.docs.forEach((profil, index) => {
-                            //Get image profil
-                            firebase.storage()
-                                .ref('/' + profil.data().image) //name in storage in firebase console
+                        for( let i = 0; i < snapshot.docs.length; i++){
+                            const url = await firebase.storage()
+                                .ref('/' + snapshot.docs[i].data().image) //name in storage in firebase console
                                 .getDownloadURL()
-                                .then((url) => {
-                                    resultsImage.push(url)
-                                    setImageUrl(resultsImage.reverse());
-                                })
-                                .catch((e) => console.log('Errors while downloading => ', e));
                             //Push profil to const
-                            results.push({ ...profil.data(), id: profil.id })
-                        })
-                        setProfiles(results);                        
+                            results.push({ ...snapshot.docs[i].data(), id: snapshot.docs[i].id })
+                            resultsImage.push(url)
+                        }
+                        setImageUrl(resultsImage);
+                        setProfiles(results);
                     })
                 } else {
                     let query = firebase.firestore().collection("users")
@@ -131,7 +127,6 @@ export default function HomeScreen({navigation, props}) {
                         setCurrentUserIndex(currentUserIndex+1);
                     }}
                     renderCard={(card, index) => card ? (
-                        console.log(imageUrl[index]),
                         <View key={card.id}
                             style={[styles.card, styles.cardShadow]}
                         >
