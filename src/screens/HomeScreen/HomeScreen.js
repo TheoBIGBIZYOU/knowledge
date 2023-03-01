@@ -76,7 +76,7 @@ export default function HomeScreen({navigation, props}) {
         setPasses(prevPass => [...prevPass, userSwiped.id]);
 
         const data = {
-            passes : passes,
+            passes : [...passes, userSwiped.id],
         };
 
         firebase.firestore().collection('users')
@@ -94,10 +94,9 @@ export default function HomeScreen({navigation, props}) {
         const userSwiped = profiles[cardIndex];
 
         setMatches(prevMatch => [...prevMatch, userSwiped.id]);
-        console.log(matches);
         
         const data = {
-            matches : matches,
+            matches : [...matches, userSwiped.id],
         };
 
         firebase.firestore().collection('users')
@@ -125,16 +124,14 @@ export default function HomeScreen({navigation, props}) {
                     verticalSwipe={false}
                     onSwipedLeft={(cardIndex) => {
                         swipeLeft(cardIndex);
+                        setCurrentUserIndex(currentUserIndex+1);
                     }}
                     onSwipedRight={(cardIndex) => {
                         swipeRight(cardIndex);
                         setCurrentUserIndex(currentUserIndex+1);
                     }}
-                    onSwipedLeft={(cardIndex) => {
-                        setCurrentUserIndex(currentUserIndex+1);
-                    }}
                     renderCard={(card, index) => card ? (
-
+                        console.log(imageUrl[index]),
                         <View key={card.id}
                             style={[styles.card, styles.cardShadow]}
                         >
