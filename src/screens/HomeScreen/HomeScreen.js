@@ -5,20 +5,7 @@ import styles from './styles';
 import SkillComponents from "../components/SkillComponents/SkillComponents";
 import Swiper from "react-native-deck-swiper";
 import { firebase } from "../../firebase/config";
-import { collection, doc, onSnapshot } from "firebase/firestore";
-
-const data = [
-    {
-        name: "Test",
-        descr: "teefezf zef zefzef zefze ff",
-        id: 1
-    },
-    {
-        name: "Test2",
-        descr: "teefezf zef zefzef zefze ff",
-        id: 2
-    }
-]
+import { onSnapshot } from "firebase/firestore";
 
 export default function HomeScreen(props) {
     const [profiles, setProfiles] = useState([]);
@@ -31,19 +18,21 @@ export default function HomeScreen(props) {
             let results = []
             let resultsImage = []
             snapshot.docs.forEach((profil, index) => {
+                // console.log(profil.data())
                 //Get image profil
                 firebase.storage()
                     .ref('/' + profil.data().image) //name in storage in firebase console
                     .getDownloadURL()
                     .then((url) => {
                         resultsImage.push(url)
-                        setImageUrl(resultsImage);
+                        setImageUrl(resultsImage.reverse());
                     })
                     .catch((e) => console.log('Errors while downloading => ', e));
                 //Push profil to const
                 results.push({ ...profil.data(), id: profil.id })
             })
             setProfiles(results);
+            // console.log(imageUrl);
         })
     }, []);
 
@@ -144,7 +133,7 @@ export default function HomeScreen(props) {
                         </Svg>
                     </TouchableOpacity>
                     <TouchableOpacity style={[styles.actionsButton, styles.actionSeeButton, styles.shadow]} onPress={()=>{
-                        console.log(imageUrl)
+                        // console.log(imageUrl)
                     }}>
                         <Svg
                             width={30}
