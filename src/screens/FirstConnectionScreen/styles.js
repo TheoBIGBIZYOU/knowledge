@@ -93,5 +93,21 @@ export default StyleSheet.create({
     skillItem: {
         marginRight: 10,
         marginBottom: 10,
+    },
+
+    input: {
+        height: 35,
+        width: '100%',
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: '#E2E2E2',
+        overflow: 'hidden',
+        backgroundColor: 'white',
+        marginTop: 10,
+        marginBottom: 24,
+        paddingLeft: 16
+    },
+    linkView: {
+        marginTop: 20
     }
 })

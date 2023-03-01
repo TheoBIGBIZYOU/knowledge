@@ -7,12 +7,13 @@ import Swiper from "react-native-deck-swiper";
 import { firebase } from "../../firebase/config";
 import { onSnapshot } from "firebase/firestore";
 
-export default function HomeScreen(props) {
+export default function HomeScreen({navigation, props}) {
     const [profiles, setProfiles] = useState([]);
     const [imageUrl, setImageUrl] = useState([]);
     const [matches, setMatches] = useState([]);
     const [passes, setPasses] = useState([]);
     const [userRole, setUserRole] = useState('');
+    const [currentUserIndex, setCurrentUserIndex] = useState(0);
     const swipeRef = useRef(null);
     const user = firebase.auth().currentUser;    
     
@@ -127,6 +128,10 @@ export default function HomeScreen(props) {
                     }}
                     onSwipedRight={(cardIndex) => {
                         swipeRight(cardIndex);
+                        setCurrentUserIndex(currentUserIndex+1);
+                    }}
+                    onSwipedLeft={(cardIndex) => {
+                        setCurrentUserIndex(currentUserIndex+1);
                     }}
                     renderCard={(card, index) => card ? (
 
@@ -206,8 +211,8 @@ export default function HomeScreen(props) {
                             />
                         </Svg>
                     </TouchableOpacity>
-                    <TouchableOpacity style={[styles.actionsButton, styles.actionSeeButton, styles.shadow]} onPress={(cardIndex)=>{
-                        console.log(profiles[cardIndex]);
+                    <TouchableOpacity style={[styles.actionsButton, styles.actionSeeButton, styles.shadow]} onPress={()=>{
+                        navigation.navigate('Profil',{ profil: profiles[currentUserIndex] });
                     }}>
                         <Svg
                             width={30}
