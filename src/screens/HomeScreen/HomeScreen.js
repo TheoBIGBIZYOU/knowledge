@@ -36,6 +36,13 @@ export default function HomeScreen(props) {
         })
     }, []);
 
+    const swipeRight = async (cardIndex) => {
+        if(!profiles[cardIndex]) return;
+
+        const userSwiped = profiles[cardIndex];
+        console.log(userSwiped.id);
+    }
+
     return (
         <SafeAreaView>
             <View style={styles.container}>
@@ -49,11 +56,8 @@ export default function HomeScreen(props) {
                     cardIndex={0}
                     animateCardOpacity
                     verticalSwipe={false}
-                    onSwipedLeft={() => {
-                        console.log('Dislike')
-                    }}
-                    onSwipedRight={() => {
-                        console.log('Like')
+                    onSwipedRight={(cardIndex) => {
+                        swipeRight(cardIndex);
                     }}
                     renderCard={(card, index) => card ? (
                         <View key={card.id}
