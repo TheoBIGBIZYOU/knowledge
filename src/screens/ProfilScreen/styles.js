@@ -33,7 +33,7 @@ export default StyleSheet.create({
     },
     descriptionText: {
         fontSize: 12,
-        color: 'white'
+        color: 'white',
     },
     skillList: {
         display: 'flex',

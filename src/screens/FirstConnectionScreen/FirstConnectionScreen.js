@@ -24,6 +24,7 @@ export default function FirstConnectionScreen({navigation}) {
     const [count, setCount] = useState(0);
     const [skill, setSkill] = useState([]);
     const [selectedSkill, setSelectedSkill] = useState(null);
+    const [userLink, setUserLink] = useState(null);
 
     const [userInfo, setUserInfo] = useState([])
 
@@ -73,6 +74,7 @@ export default function FirstConnectionScreen({navigation}) {
         const data = {
             image : photo.substring(photo.lastIndexOf('/')+1),
             skills : skill,
+            urlPerso : userLink,
         };
 
         //upload image
@@ -304,6 +306,22 @@ export default function FirstConnectionScreen({navigation}) {
                             value={selectedSkill}
                             items={skillJSON}
                         />
+                        {
+                            userInfo.role === 'mentor' ?
+                                <View style={styles.linkView}>
+                                    <Text style={styles.descriptionText}>Ajouter le lien de votre site personnel</Text>
+                                    <TextInput
+                                        style={styles.input}
+                                        placeholderTextColor="#aaaaaa"
+                                        onChangeText={(text) => setUserLink(text)}
+                                        value={userLink}
+                                        underlineColorAndroid="transparent"
+                                        autoCapitalize="none"
+                                    />
+                                </View>
+                            :
+                                null
+                        }
                     </View>
                 </View>
                 <TouchableOpacity style={nextPart ? styles.disableView : null} onPress={() => updateDescription()}>

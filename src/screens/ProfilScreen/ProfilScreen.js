@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react'
 import Svg, { Path } from "react-native-svg";
 import styles from './styles';
 import {firebase} from "../../firebase/config";
-import {onSnapshot} from "firebase/firestore";
+import {Hyperlink} from "react-native-hyperlink";
 import ButtonComponents from "../components/ButtonComponents/ButtonComponents";
 import HorizontalBar from "../components/HorizontalBar/HorizontalBar";
 import SkillComponents from "../components/SkillComponents/SkillComponents";
@@ -60,6 +60,15 @@ export default function ProfilScreen({ route, navigation: { goBack } }) {
                         <Text style={styles.collabText}>12</Text>
                     </View>
                 </View>
+                <View  style={styles.stats}>
+                    <View style={styles.collab}>
+                        <Hyperlink
+                            linkDefault={true}
+                            linkText={(url) => url === userInfo.urlPerso ? 'Voir son portfolio' : 'Voir son portfolio'}>
+                            <Text style={styles.collabText}>{userInfo.urlPerso}</Text>
+                        </Hyperlink>
+                    </View>
+                </View>
                 <HorizontalBar />
                 <View styles={styles.descriptionSkills}>
                     <Text style={[styles.descriptionText, styles.titleWithoutMarginTop]}>Description :</Text>
@@ -72,7 +81,7 @@ export default function ProfilScreen({ route, navigation: { goBack } }) {
                             userInfo.skills ?
                                 userInfo.skills.map((item) => {
                                     return (
-                                        <View style={styles.skillItem}>
+                                        <View key={item} style={styles.skillItem}>
                                             <SkillComponents text={item} state={'enable'} />
                                         </View>
                                     )
