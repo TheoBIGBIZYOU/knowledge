@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { Image, Text, View, Pressable, TextInput, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import styles from './styles';
 import Svg, {Circle, Path} from "react-native-svg";
@@ -29,14 +29,17 @@ export default function FirstConnectionScreen({navigation}) {
 
     //user info
     const user = firebase.auth().currentUser;
-    const dataUser = firebase.firestore().collection("users").where("id", "==", user.uid)
-    const unSubscribe = onSnapshot(dataUser, (snapshot) => {
-        let results = []
-        snapshot.docs.forEach(userInfo => {
-            results.push({...userInfo.data(), id: userInfo.id})
+
+    useEffect(() => {
+        const dataUser = firebase.firestore().collection("users").where("id", "==", user.uid)
+        const unSubscribe = onSnapshot(dataUser, (snapshot) => {
+            let results = []
+            snapshot.docs.forEach(userInfo => {
+                results.push({...userInfo.data(), id: userInfo.id})
+            })
+            setUserInfo(results[0])
         })
-        setUserInfo(results[0])
-    })
+    },[]);
 
 
     async function uploadImage() {
@@ -54,6 +57,7 @@ export default function FirstConnectionScreen({navigation}) {
     }
 
     function updateDescription() {
+        console.log(user.uid)
         firebase.firestore().collection('users')
             .doc(user.uid)
             .set({description: description}, {merge: true})
