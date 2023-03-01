@@ -7,9 +7,10 @@ import Swiper from "react-native-deck-swiper";
 import { firebase } from "../../firebase/config";
 import { onSnapshot } from "firebase/firestore";
 
-export default function HomeScreen(props) {
+export default function HomeScreen({navigation, props}) {
     const [profiles, setProfiles] = useState([]);
     const [imageUrl, setImageUrl] = useState([]);
+    const [currentUserIndex, setCurrentUserIndex] = useState(0);
     const swipeRef = useRef(null);
 
     useEffect(() => {
@@ -58,6 +59,10 @@ export default function HomeScreen(props) {
                     verticalSwipe={false}
                     onSwipedRight={(cardIndex) => {
                         swipeRight(cardIndex);
+                        setCurrentUserIndex(currentUserIndex+1);
+                    }}
+                    onSwipedLeft={(cardIndex) => {
+                        setCurrentUserIndex(currentUserIndex+1);
                     }}
                     renderCard={(card, index) => card ? (
                         <View key={card.id}
@@ -137,7 +142,7 @@ export default function HomeScreen(props) {
                         </Svg>
                     </TouchableOpacity>
                     <TouchableOpacity style={[styles.actionsButton, styles.actionSeeButton, styles.shadow]} onPress={()=>{
-                        // console.log(imageUrl)
+                        navigation.navigate('Profil',{ profil: profiles[currentUserIndex] });
                     }}>
                         <Svg
                             width={30}
