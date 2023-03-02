@@ -1,8 +1,9 @@
-import { Text, View, Image, SafeAreaView, TouchableOpacity } from 'react-native'
+import { Text, View, Image, SafeAreaView, TouchableOpacity, ScrollView } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import styles from './styles';
 import { firebase } from "../../firebase/config";
 import { onSnapshot } from "firebase/firestore";
+import ChatList from '../components/ChatList/ChatList';
 
 export default function ChatScreen({ navigation, props }) {
     const [userRole, setUserRole] = useState('');
@@ -14,9 +15,15 @@ export default function ChatScreen({ navigation, props }) {
         onSnapshot(firebase.firestore().collection("users").where("id", "==", user.uid), (snapshot) => {
             snapshot.docs.forEach(user => {
                 setUserRole(user.data().role);
+                
                 let query = firebase.firestore().collection("users")
-                query = query.where("role", "==", "mentor")
+                if(user.data().role === 'newbie') {
+                    query = query.where("role", "==", "mentor")
+                } else {
+                    query = query.where("role", "==", "newbie")
+                }
                 query = query.where("matches", 'array-contains', user.data().id)
+                query = query.where("startChat", '==', false)
 
                 onSnapshot(query, (snapshot) => {
                     let chatUser = [];
@@ -41,27 +48,39 @@ export default function ChatScreen({ navigation, props }) {
             <View style={styles.container}>
                 <View style={styles.background}></View>
                 <View style={styles.startChat}>
-                    <Text style={styles.chatTitle}>Messages</Text>
-                    <View style={styles.chatContainer}>
+                    <Text style={styles.title}>Messages</Text>
+                    <View style={styles.startChatContainer}>
+                        <Text style={styles.startChat}>Démarrer une conversation</Text>
+                    </View>
+                    <ScrollView 
+                        horizontal={true}
+                        showsHorizontalScrollIndicator={false}
+                        contentContainerStyle={styles.chatContainer}
+                    >
                         {
                             newChatUser.length > 0 ?
                                 newChatUser.map((item, index) => {
+                                    console.log(imageUrl[index])
                                     return (
-                                        <TouchableOpacity key={item} style={styles.skillItem}>
+                                        <TouchableOpacity
+                                            key={index}
+                                            style={styles.btnStartChat}
+                                        >
                                             <Image
                                                 style={styles.userImage}
                                                 source={{ uri: imageUrl[index] }}
                                             />
-                                            <Text>{item.fullName}</Text>
+                                            <Text style={styles.userName}>{item.fullName}</Text>
                                         </TouchableOpacity>
                                     )
                                 })
                                 : <Text style={styles.descriptionText}>Aucun chat disponible</Text>
                         }
-                    </View>
+                    </ScrollView>
                 </View>
-
-                {userRole === 'newbie' ? <Text style={styles.title}>Cherche ton mentor</Text> : <Text style={styles.title}>Choisis ton apprenti</Text>}
+                <View style={styles.chatsContainer}>
+                    <ChatList image={'https://cdn.smehost.net/sonymusicfr-frprod/wp-content/uploads/2022/02/Vald.jpeg'} name={'Yann'} message={'As-tu réussi à te débloquer avec nos précédents échanges ?'} />
+                </View>
             </View>
 
         </SafeAreaView>
