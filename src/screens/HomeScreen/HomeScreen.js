@@ -40,22 +40,18 @@ export default function HomeScreen({navigation, props}) {
                     let query = firebase.firestore().collection("users")
                     query = query.where("role", "==", "newbie") 
                     query = query.where("matches", 'array-contains', user.data().id) 
-                    onSnapshot(query, (snapshot) => {
+                    onSnapshot(query, async (snapshot) => {
                         let results = []
                         let resultsImage = []
-                        snapshot.docs.forEach((profil, index) => {
-                            //Get image profil
-                            firebase.storage()
-                                .ref('/' + profil.data().image) //name in storage in firebase console
+                        for( let i = 0; i < snapshot.docs.length; i++){
+                            const url = await firebase.storage()
+                                .ref('/' + snapshot.docs[i].data().image) //name in storage in firebase console
                                 .getDownloadURL()
-                                .then((url) => {
-                                    resultsImage.push(url)
-                                    setImageUrl(resultsImage.reverse());
-                                })
-                                .catch((e) => console.log('Errors while downloading => ', e));
                             //Push profil to const
-                            results.push({ ...profil.data(), id: profil.id })
-                        })
+                            results.push({ ...snapshot.docs[i].data(), id: snapshot.docs[i].id })
+                            resultsImage.push(url)
+                        }
+                        setImageUrl(resultsImage);
                         setProfiles(results);
                     })      
                 }
