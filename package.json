@@ -17,15 +17,16 @@
     "expo-image-picker": "~14.0.2",
     "expo-status-bar": "~1.4.2",
     "firebase": "^9.17.1",
+    "metro-core": "^0.76.4",
     "react": "18.1.0",
-    "react-native": "0.70.5",
+    "react-native": "0.70.8",
     "react-native-deck-swiper": "^2.0.13",
     "react-native-gesture-handler": "~2.8.0",
     "react-native-hyperlink": "^0.0.22",
     "react-native-image-picker": "^5.1.0",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-picker-select": "^8.0.4",
-    "react-native-svg": "^13.8.0",
+    "react-native-svg": "13.4.0",
     "yarn": "^1.22.19"
   },
   "devDependencies": {

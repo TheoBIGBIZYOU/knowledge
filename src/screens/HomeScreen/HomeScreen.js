@@ -5,7 +5,7 @@ import styles from './styles';
 import SkillComponents from "../components/SkillComponents/SkillComponents";
 import Swiper from "react-native-deck-swiper";
 import { firebase } from "../../firebase/config";
-import { onSnapshot } from "firebase/firestore";
+import { onSnapshot, setDoc, doc, collection, QuerySnapshot } from "firebase/firestore";
 
 export default function HomeScreen({navigation, props}) {
     const [profiles, setProfiles] = useState([]);
@@ -18,11 +18,19 @@ export default function HomeScreen({navigation, props}) {
     const user = firebase.auth().currentUser;
 
     useEffect(() => {
+        
         onSnapshot(firebase.firestore().collection("users").where("id", "==", user.uid), (snapshot) => {
             snapshot.docs.forEach(user => {
+                let alreadyPassed;
+                let alreadyLiked;
+                
+                alreadyPassed = user.data().passes;
+                alreadyLiked = user.data().matches;
+
                 setUserRole(user.data().role);
                 if(user.data().role === 'newbie') {
                     let resultsImage = []
+                    let resultsFilter = []
                     onSnapshot(firebase.firestore().collection("users").where("role", "==", "mentor"), async(snapshot) => {
                         let results = []
                         for( let i = 0; i < snapshot.docs.length; i++){
@@ -33,8 +41,23 @@ export default function HomeScreen({navigation, props}) {
                             results.push({ ...snapshot.docs[i].data(), id: snapshot.docs[i].id })
                             resultsImage.push(url)
                         }
+
+                        resultsFilter = results;
+
+                        if(alreadyPassed) {
+                            resultsFilter = results.filter(element => {
+                                return !alreadyPassed.includes(element.id);                            
+                            });
+                        }
+                        
+                        if(alreadyLiked) {
+                            resultsFilter = results.filter(element => {
+                                return !alreadyLiked.includes(element.id);                            
+                            });
+                        }
+
                         setImageUrl(resultsImage);
-                        setProfiles(results);
+                        setProfiles(resultsFilter);
                     })
                 } else {
                     let query = firebase.firestore().collection("users")
@@ -42,6 +65,7 @@ export default function HomeScreen({navigation, props}) {
                     query = query.where("matches", 'array-contains', user.data().id) 
                     onSnapshot(query, async (snapshot) => {
                         let results = []
+                        let resultsFilter = []
                         let resultsImage = []
                         for( let i = 0; i < snapshot.docs.length; i++){
                             const url = await firebase.storage()
@@ -51,8 +75,24 @@ export default function HomeScreen({navigation, props}) {
                             results.push({ ...snapshot.docs[i].data(), id: snapshot.docs[i].id })
                             resultsImage.push(url)
                         }
+
+                        resultsFilter = results;
+                        
+                        if(alreadyPassed) {
+                            resultsFilter = results.filter(element => {
+                                return !alreadyPassed.includes(element.id);                            
+                            });
+                        }
+
+
+                        if(alreadyLiked) {
+                            resultsFilter = results.filter(element => {
+                                return !alreadyLiked.includes(element.id);                            
+                            });
+                        }
+
                         setImageUrl(resultsImage);
-                        setProfiles(results);
+                        setProfiles(resultsFilter);
                     })      
                 }
             })
@@ -60,7 +100,7 @@ export default function HomeScreen({navigation, props}) {
 
     }, []);
 
-    const swipeLeft = async (cardIndex) => {
+    const swipeLeft = (cardIndex) => {
         if(!profiles[cardIndex]) return;
 
         const userSwiped = profiles[cardIndex];
