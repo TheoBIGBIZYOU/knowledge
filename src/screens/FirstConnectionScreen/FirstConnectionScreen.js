@@ -58,7 +58,6 @@ export default function FirstConnectionScreen({navigation}) {
     }
 
     function updateDescription() {
-        console.log(user.uid)
         firebase.firestore().collection('users')
             .doc(user.uid)
             .set({description: description}, {merge: true})
@@ -84,7 +83,7 @@ export default function FirstConnectionScreen({navigation}) {
             .doc(user.uid)
             .set(data, {merge: true})
             .then(() => {
-                navigation.navigate('Home', {user})
+                navigation.navigate('Home')
             })
             .catch((error) => {
                 alert(error)
@@ -138,8 +137,11 @@ export default function FirstConnectionScreen({navigation}) {
                             aspect: [4, 3],
                             quality: 1,
                         });
-                        if (!result.cancelled) {
+                        if (!result.canceled) {
                             setPhoto(result.assets[0].uri);
+                        }
+                        else{
+                            console.log("cancel");
                         }
                     }
                     }>

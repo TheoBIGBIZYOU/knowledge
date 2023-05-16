@@ -52,7 +52,7 @@ export default function ChatScreen({ navigation, props }) {
                     <View style={styles.startChatContainer}>
                         <Text style={styles.startChat}>Démarrer une conversation</Text>
                     </View>
-                    <ScrollView 
+                    <ScrollView
                         horizontal={true}
                         showsHorizontalScrollIndicator={false}
                         contentContainerStyle={styles.chatContainer}
@@ -60,7 +60,7 @@ export default function ChatScreen({ navigation, props }) {
                         {
                             newChatUser.length > 0 ?
                                 newChatUser.map((item, index) => {
-                                    console.log(imageUrl[index])
+                                    console.log(imageUrl);
                                     return (
                                         <TouchableOpacity
                                             key={index}

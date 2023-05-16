@@ -77,7 +77,7 @@ export default StyleSheet.create({
     },
     actions: {
         position: 'absolute',
-        bottom: 0,
+        bottom: 100,
         width: '100%',
         display: 'flex',
         flexDirection: 'row',
@@ -98,5 +98,18 @@ export default StyleSheet.create({
         width: 66,
         height: 66,
         marginHorizontal: 26
+    },
+    bottomNav: {
+        position: 'absolute',
+        bottom: 0,
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 35,
+        backgroundColor: '#161241',
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
     }
 })
