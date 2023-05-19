@@ -3,7 +3,8 @@ import React, { useEffect, useState } from 'react'
 import styles from './styles';
 import { firebase } from "../../firebase/config";
 import { onSnapshot } from "firebase/firestore";
-import ChatList from '../components/ChatList/ChatList';
+import ChatList from '../../components/ChatList/ChatList';
+import Header from '../../components/Header/Header';
 
 export default function ChatScreen({ navigation, props }) {
     const [userRole, setUserRole] = useState('');
@@ -45,10 +46,10 @@ export default function ChatScreen({ navigation, props }) {
 
     return (
         <SafeAreaView>
+            <Header title="Chat"/>
             <View style={styles.container}>
                 <View style={styles.background}></View>
                 <View style={styles.startChat}>
-                    <Text style={styles.title}>Messages</Text>
                     <View style={styles.startChatContainer}>
                         <Text style={styles.startChat}>Démarrer une conversation</Text>
                     </View>
@@ -64,6 +65,9 @@ export default function ChatScreen({ navigation, props }) {
                                         <TouchableOpacity
                                             key={index}
                                             style={styles.btnStartChat}
+                                            onPress={() => navigation.navigate('Message', {
+                                                
+                                            })}
                                         >
                                             <Image
                                                 style={styles.userImage}

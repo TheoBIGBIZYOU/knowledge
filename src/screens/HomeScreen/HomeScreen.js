@@ -2,10 +2,11 @@ import { Text, View, Image, SafeAreaView, TouchableOpacity } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import Svg, { Path } from "react-native-svg";
 import styles from './styles';
-import SkillComponents from "../components/SkillComponents/SkillComponents";
+import SkillComponents from "../../components/SkillComponents/SkillComponents";
 import Swiper from "react-native-deck-swiper";
 import { firebase } from "../../firebase/config";
-import { onSnapshot, setDoc, doc, collection, QuerySnapshot } from "firebase/firestore";
+import { onSnapshot } from "firebase/firestore";
+import generateId from '../../../lib/generateId';
 
 export default function HomeScreen({navigation, props}) {
     const [profiles, setProfiles] = useState([]);
@@ -13,11 +14,14 @@ export default function HomeScreen({navigation, props}) {
     const [matches, setMatches] = useState([]);
     const [passes, setPasses] = useState([]);
     const [userRole, setUserRole] = useState('');
+    const [userInfos, setUserInfos] = useState('');
     const [currentUserIndex, setCurrentUserIndex] = useState(0);
     const swipeRef = useRef(null);
     const user = firebase.auth().currentUser;
 
     useEffect(() => {
+
+        console.log(user);
         
         onSnapshot(firebase.firestore().collection("users").where("id", "==", user.uid), (snapshot) => {
             snapshot.docs.forEach(user => {
@@ -26,6 +30,8 @@ export default function HomeScreen({navigation, props}) {
                 
                 alreadyPassed = user.data().passes;
                 alreadyLiked = user.data().matches;
+
+                setUserInfos(user.data());
 
                 setUserRole(user.data().role);
                 if(user.data().role === 'newbie') {
@@ -97,8 +103,29 @@ export default function HomeScreen({navigation, props}) {
                 }
             })
         })
-
     }, []);
+
+    const createMatchesCollection = (userId, userSwipeId, userInfos, userSwipedInfos) => {
+        if(userRole === 'mentor') {    
+            
+            const matchesRef = firebase.firestore().collection('matches');
+            const matchData = {
+                users: {
+                    [userId]: userInfos,
+                    [userSwipeId]: userSwipedInfos
+                },
+                usersMatched: [userId, userSwipeId]
+            };
+
+            matchesRef
+            .doc(generateId(userId, userSwipeId))
+            .set(matchData)
+            .then(() => {})
+            .catch((error) => {
+                alert(error);
+            });
+        }
+    }
 
     const swipeLeft = (cardIndex) => {
         if(!profiles[cardIndex]) return;
@@ -134,10 +161,13 @@ export default function HomeScreen({navigation, props}) {
         firebase.firestore().collection('users')
         .doc(user.uid)
         .set(data, {merge: true})
-        .then(() => {})
+        .then(() => {
+            createMatchesCollection(user.uid, userSwiped.id, userInfos, userSwiped);
+        })
         .catch((error) => {
             alert(error)
-        });        
+        });   
+        
 
     }
 

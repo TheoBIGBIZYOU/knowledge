@@ -17,8 +17,6 @@ export default StyleSheet.create({
         pointerEvents: 'none'
     }, 
     startChatContainer: {
-        borderTopWidth: 1,
-        borderTopColor: '#fff',
         width: '80%',
         alignItems: 'center',
         paddingTop: 27,
@@ -28,13 +26,6 @@ export default StyleSheet.create({
         alignItems: 'center',
         color: '#fff',
     },
-    title: {
-        color: '#fff',
-        textAlign: 'center',
-        fontSize: 12,
-        width: '80%',
-        marginVertical: 14
-    },  
     chatContainer: {
         width: '100%'
     },
@@ -52,6 +43,11 @@ export default StyleSheet.create({
         textAlign: 'center',
         marginTop: 10,
         fontSize: 12
+    },
+    descriptionText: {
+        color: '#fff',
+        width: '100%',
+        textAlign: 'center'
     },
     chatsContainer: {
         marginTop: 40,
