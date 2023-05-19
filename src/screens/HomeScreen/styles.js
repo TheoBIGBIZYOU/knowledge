@@ -31,6 +31,7 @@ export default StyleSheet.create({
         paddingVertical: 50,
         paddingHorizontal: 50,
         alignItems: 'center',
+        minHeight: 500,
     },
     cardShadow: {
         shadowColor: '#000',
