@@ -53,9 +53,6 @@ export default function HomeScreen({navigation, props}) {
                         }
                         setImageUrl(resultsImage);
                         setProfiles(results);
-
-                        // console.log(imageUrl.length);
-                        // console.log(profiles.length);
                     })      
                 }
             })
@@ -101,10 +98,6 @@ export default function HomeScreen({navigation, props}) {
         .catch((error) => {
             alert(error)
         });
-
-
-        console.log(cardIndex);
-        console.log(profiles.length);
 
     }
 
@@ -188,7 +181,13 @@ export default function HomeScreen({navigation, props}) {
                             </View> )
                     } />
                     :
-                        <View style={[styles.card, styles.cardShadow]}>
+                        <View style={[styles.card, styles.cardShadow, styles.noProfiles]}>
+                            <View style={styles.shadow}>
+                                {/*<Image*/}
+                                {/*    style={styles.userImage}*/}
+                                {/*    source={{ uri: imageUrl[index] }}*/}
+                                {/*/>*/}
+                            </View>
                             <Text>Aucun autre profil</Text>
                         </View>
                     }

@@ -39,7 +39,12 @@ export default StyleSheet.create({
         shadowOpacity: 0.2,
         shadowRadius: 1.41,
         elevation: 2
-    },  
+    },
+    noProfiles: {
+        width: '90%',
+        display: 'flex',
+        justifyContent: 'center'
+    },
     shadow: {
         shadowOffset: {width: 0, height: 4},  
         shadowColor: '#000',  
