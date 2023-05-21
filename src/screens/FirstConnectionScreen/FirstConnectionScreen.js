@@ -41,7 +41,6 @@ export default function FirstConnectionScreen({navigation}) {
             setUserInfo(results[0])
         })
 
-        console.log(userInfo)
         if(userInfo.description != undefined) setDescription(userInfo.description);
         if(userInfo.skills != undefined) setSkill(userInfo.skills);
         if(userInfo.urlPerso != undefined) setUserLink(userInfo.urlPerso);
