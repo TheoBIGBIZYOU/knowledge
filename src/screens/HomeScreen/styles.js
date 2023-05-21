@@ -18,8 +18,8 @@ export default StyleSheet.create({
         pointerEvents: 'none'
     },
     title: {
-        marginTop: 60,
-        fontSize: 14,
+        marginTop: 35,
+        fontSize: 21,
         fontWeight: 'bold',
         textTransform: 'uppercase',
         color: '#fff'
@@ -46,10 +46,10 @@ export default StyleSheet.create({
         justifyContent: 'center'
     },
     shadow: {
-        shadowOffset: {width: 0, height: 4},  
-        shadowColor: '#000',  
-        shadowOpacity: 0.25,  
-        shadowRadius: 3,     
+        shadowOffset: {width: 0, height: 4},
+        shadowColor: '#000',
+        shadowOpacity: 0.25,
+        shadowRadius: 3,
     },
     userImage: {
         width: 150,
@@ -104,18 +104,5 @@ export default StyleSheet.create({
         width: 66,
         height: 66,
         marginHorizontal: 26
-    },
-    bottomNav: {
-        position: 'absolute',
-        bottom: 0,
-        width: '100%',
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginTop: 35,
-        backgroundColor: '#161241',
-        borderTopLeftRadius: 20,
-        borderTopRightRadius: 20,
     }
 })
