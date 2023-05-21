@@ -252,7 +252,7 @@ export default function HomeScreen({navigation, props}) {
                 </View>
             </SafeAreaView>
             <SafeAreaView style={{ flex: 0, backgroundColor: '#161241' }} >
-                <MenuComponents/>
+                <MenuComponents navigation={navigation}/>
             </SafeAreaView>
         </Fragment>
     )

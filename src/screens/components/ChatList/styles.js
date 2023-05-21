@@ -1,6 +1,10 @@
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
+    chatContainer: {
+        height: '100%',
+        position: 'relative',
+    },
     cardChat: {
         marginTop: 25,
         backgroundColor: '#fff',
@@ -8,6 +12,7 @@ export default StyleSheet.create({
         padding: 16,
         alignItems: 'center',
         flexDirection: 'row',
+
     },
     cardChatLeft: {
         marginRight: 14,

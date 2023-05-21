@@ -46,7 +46,10 @@ export default function MenuComponents({navigation,props}) {
                     </Svg>
                 </TouchableOpacity>
 
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() =>
+                    navigation.navigate('FirstConnection')
+                }
+                >
                     <Svg
                         width={30}
                         height={30}
