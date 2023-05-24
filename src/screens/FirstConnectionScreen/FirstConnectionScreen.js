@@ -58,7 +58,6 @@ export default function FirstConnectionScreen({navigation}) {
     }
 
     function updateDescription() {
-        console.log(user.uid)
         firebase.firestore().collection('users')
             .doc(user.uid)
             .set({description: description}, {merge: true})

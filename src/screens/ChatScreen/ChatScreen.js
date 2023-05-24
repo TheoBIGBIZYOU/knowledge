@@ -82,7 +82,7 @@ export default function ChatScreen({ navigation, props }) {
                     </ScrollView>
                 </View>
                 <View style={styles.chatsContainer}>
-                    <ChatList image={'https://cdn.smehost.net/sonymusicfr-frprod/wp-content/uploads/2022/02/Vald.jpeg'} name={'Yann'} message={'As-tu réussi à te débloquer avec nos précédents échanges ?'} />
+                    <ChatList />
                 </View>
             </View>
 

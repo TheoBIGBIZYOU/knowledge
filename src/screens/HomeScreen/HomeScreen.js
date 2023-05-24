@@ -19,10 +19,7 @@ export default function HomeScreen({navigation, props}) {
     const swipeRef = useRef(null);
     const user = firebase.auth().currentUser;
 
-    useEffect(() => {
-
-        console.log(user);
-        
+    useEffect(() => {              
         onSnapshot(firebase.firestore().collection("users").where("id", "==", user.uid), (snapshot) => {
             snapshot.docs.forEach(user => {
                 let alreadyPassed;
