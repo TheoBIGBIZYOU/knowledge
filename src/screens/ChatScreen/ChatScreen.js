@@ -3,8 +3,9 @@ import React, {Fragment, useEffect, useState} from 'react'
 import styles from './styles';
 import { firebase } from "../../firebase/config";
 import { onSnapshot } from "firebase/firestore";
-import ChatList from '../components/ChatList/ChatList';
-import MenuComponents from "../components/MenuComponents/MenuComponents";
+import ChatList from '../../components/ChatList/ChatList';
+import MenuComponents from "../../components/MenuComponents/MenuComponents";
+import Header from '../../components/Header/Header';
 
 export default function ChatScreen({ navigation, props }) {
     const [userRole, setUserRole] = useState('');
@@ -48,10 +49,10 @@ export default function ChatScreen({ navigation, props }) {
         <Fragment>
             <SafeAreaView style={{ flex:0, backgroundColor: '#161241' }} />
             <SafeAreaView style={{flex: 1}}>
+                <Header title="Chat"/>
                 <View style={styles.container}>
                     <View style={styles.background}></View>
                     <View style={styles.startChat}>
-                        <Text style={styles.title}>Messages</Text>
                         <View style={styles.startChatContainer}>
                             <Text style={styles.startChat}>Démarrer une conversation</Text>
                         </View>
@@ -67,6 +68,9 @@ export default function ChatScreen({ navigation, props }) {
                                             <TouchableOpacity
                                                 key={index}
                                                 style={styles.btnStartChat}
+                                                onPress={() => navigation.navigate('Message', {
+
+                                                })}
                                             >
                                                 <Image
                                                     style={styles.userImage}
@@ -81,9 +85,10 @@ export default function ChatScreen({ navigation, props }) {
                         </ScrollView>
                     </View>
                     <View style={styles.chatsContainer}>
-                        <ChatList image={'https://cdn.smehost.net/sonymusicfr-frprod/wp-content/uploads/2022/02/Vald.jpeg'} name={'Yann'} message={'As-tu réussi à te débloquer avec nos précédents échanges ?'} />
+                        <ChatList />
                     </View>
                 </View>
+
             </SafeAreaView>
             <SafeAreaView style={{ flex: 0, backgroundColor: '#161241' }} >
                 <MenuComponents navigation={navigation}/>

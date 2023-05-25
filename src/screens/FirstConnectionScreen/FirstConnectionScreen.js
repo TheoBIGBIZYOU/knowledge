@@ -4,12 +4,12 @@ import styles from './styles';
 import Svg, {Circle, Path} from "react-native-svg";
 import * as ImagePicker from 'expo-image-picker';
 import { firebase } from "../../firebase/config";
-import ButtonComponents from "../components/ButtonComponents/ButtonComponents";
+import ButtonComponents from "../../components/ButtonComponents/ButtonComponents";
 import RNPickerSelect from "react-native-picker-select";
 import skillJSON from '../../../assets/json/skills.json';
 import {Platform} from 'react-native';
-import SkillComponents from "../components/SkillComponents/SkillComponents";
-import HorizontalBar from "../components/HorizontalBar/HorizontalBar";
+import SkillComponents from "../../components/SkillComponents/SkillComponents";
+import HorizontalBar from "../../components/HorizontalBar/HorizontalBar";
 
 
 import { onSnapshot }from 'firebase/firestore'

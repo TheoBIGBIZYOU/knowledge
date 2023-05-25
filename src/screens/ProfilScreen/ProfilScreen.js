@@ -4,9 +4,9 @@ import Svg, { Path } from "react-native-svg";
 import styles from './styles';
 import {firebase} from "../../firebase/config";
 import {Hyperlink} from "react-native-hyperlink";
-import ButtonComponents from "../components/ButtonComponents/ButtonComponents";
-import HorizontalBar from "../components/HorizontalBar/HorizontalBar";
-import SkillComponents from "../components/SkillComponents/SkillComponents";
+import ButtonComponents from "../../components/ButtonComponents/ButtonComponents";
+import HorizontalBar from "../../components/HorizontalBar/HorizontalBar";
+import SkillComponents from "../../components/SkillComponents/SkillComponents";
 
 export default function ProfilScreen({ route, navigation: { goBack } }) {
     const [userInfo, setUserInfo] = useState(route.params.profil)
