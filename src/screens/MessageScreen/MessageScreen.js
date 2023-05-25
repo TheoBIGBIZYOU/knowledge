@@ -7,7 +7,7 @@ import Header from '../../components/Header/Header';
 import SenderMessage from '../../components/SenderMessage/SenderMessage';
 import ReceiverMessage from '../../components/ReceiverMessage/ReceiverMessage';
 import getMatchedUserInfo from '../../../lib/getMatchedUserInfo';
-import { onSnapshot, serverTimestamp } from 'firebase/firestore';
+import { onSnapshot, serverTimestamp, query, collection, orderBy } from 'firebase/firestore';
 
 
 export default function MessageScreen() {
@@ -19,46 +19,93 @@ export default function MessageScreen() {
     const { matchDetails } = params;
 
     useEffect(() => {
-        onSnapshot(firebase.firestore().collection("matches")
-            .doc(matchDetails.id)
-            .collection("messages")
-            .orderBy("timestamp", "desc"),
-            (snapshot) => setMessages(snapshot.docs.map(doc => (
-                {
-                id: doc.id,
-                ...doc.data()
-            })))
-        )
+        // console.log(user.uid)
+        // console.log(matchDetails.id)
+        let query = firebase.firestore().collection("matches")
+        // query = query.where("matches", 'array-contains', matchDetails.id)
+        onSnapshot(query, async(snapshot) => {
+            snapshot.docs.forEach(match => {
+                if(match.id === matchDetails.id){
+                    let tabMessage = match.data().messages;
+                    console.log(tabMessage.userId);
+                    setMessages(messages => [...messages, tabMessage])
+                    // setMessages({
+                    //     id: tabMessage.userId,
+                    //     ...tabMessage
+                    // })
+                    console.log(messages);
+                    // console.log(messages);
+                    // setMessages(
+                    //     match.data().messages.map(doc => ({
+                    //         id: doc.id,
+                    //         ...doc.data()
+                    //     }))
+                    // );
+                    
+                }
+            })
+        })
+
+        // onSnapshot(firebase.firestore().collection("matches"), 
+        // (snapshot) => {
+        //      console.log(snapshot.docs)
+        // })
+
+
+        
+
+        // onSnapshot(
+        //     query(
+        //         collection(firebase.firestore(), "matches", matchDetails.id, "messages")
+        //         // .orderBy("timestamp", "desc")
+        //     ),
+        //     (snapshot) => {
+        //         console.log(snapshot.docs)
+        //     snapshot.docs.map(doc => {
+        //         console.log(doc.data())
+        //     })
+        //     //     setMessages(snapshot.docs.map(doc => (
+        //     //     {
+        //     //     id: doc.id,
+        //     //     ...doc.data()
+        //     // })
+        //     // ))
+        //     }
+        // )
     }, [matchDetails, firebase.firestore()])
 
     const sendMessage = () => {
         firebase.firestore().collection('matches')
-        .doc(matchDetails.id)
-        .set({
-            messages: {
-                timestamp: serverTimestamp(),
-                userId: user.uid,
-                fullName: matchDetails.users[user.uid].fullName,
-                photo: matchDetails.users[user.uid].image,
-                message: input,
-            }
-        }, {merge: true})
+            .doc(matchDetails.id)
+            .set({
+                messages: {
+                    timestamp: serverTimestamp(),
+                    userId: user.uid,
+                    fullName: matchDetails.users[user.uid].fullName,
+                    photo: matchDetails.users[user.uid].image,
+                    message: input,
+                }
+            }, { merge: true })
 
         setInput("");
     };
 
     return (
         <SafeAreaView>
-            <Header title={getMatchedUserInfo(matchDetails?.users, user.uid).fullName}/>
+            <Header title={getMatchedUserInfo(matchDetails?.users, user.uid).fullName} />
             <KeyboardAvoidingView
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
-            keyboardVerticalOffset={10}
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
+                keyboardVerticalOffset={10}
             >
-                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                { messages != undefined ? 
+                                <SenderMessage key={'0'} message={messages} />
+                    : <Text>j'ai pas</Text>
+                }
+                {/* <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     <FlatList
                         data={messages}
                         keyExtractor={item => item.id}
-                        renderItem={({item: message}) => 
+                        renderItem={({ item: message }) =>
                             message.userId === user.uid ? (
                                 <SenderMessage key={message.id} messages={message} />
                             ) : (
@@ -66,7 +113,7 @@ export default function MessageScreen() {
                             )
                         }
                     />
-                </TouchableWithoutFeedback>
+                </TouchableWithoutFeedback> */}
             </KeyboardAvoidingView>
 
             <View>
@@ -76,7 +123,7 @@ export default function MessageScreen() {
                     onSubmitEditing={sendMessage}
                     value={input}
                 />
-                <Button onPress={sendMessage} title="Envoyer"/>
+                <Button onPress={sendMessage} title="Envoyer" />
             </View>
         </SafeAreaView>
     )

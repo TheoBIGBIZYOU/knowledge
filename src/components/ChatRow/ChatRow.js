@@ -10,9 +10,19 @@ export default function ChatRow({ matchDetails }) {
     const navigation = useNavigation();
     const user = firebase.auth().currentUser;
     const [matchedUserInfo, setMatchedUserInfo] = useState(null);
+    const [urlImage, setUrlImage] = useState('');
 
     useEffect(() => {
+        let resultsImage = []
         setMatchedUserInfo(getMatchedUserInfo(matchDetails.users, user.uid));
+        console.log(matchedUserInfo)
+        // const url = firebase.storage()
+        //     .ref('/' + matchedUserInfo.image) //name in storage in firebase console
+        //     .getDownloadURL()
+        // resultsImage.push(url);
+
+        // setUrlImage(resultsImage);
+
     }, [matchDetails, user]);
 
 
@@ -23,14 +33,14 @@ export default function ChatRow({ matchDetails }) {
             onPress={() => navigation.navigate('Message', {matchDetails})}
         >
             <View style={styles.cardChatLeft}>
-                <Image
+                {/* <Image
                     style={styles.cardChatUserImage}
-                    source={{ uri: matchedUserInfo?.image }}
-                />
+                    source={{ uri: urlImage }}
+                /> */}
             </View>
             <View style={styles.cardChatRight}>
                 <Text style={styles.cardChatName}>{matchedUserInfo?.fullName}</Text>
-                <Text style={styles.cardChatMessage}>Hello</Text>
+                {/* <Text style={styles.cardChatMessage}>{urlImage}</Text> */}
             </View>
         </TouchableOpacity>
     )

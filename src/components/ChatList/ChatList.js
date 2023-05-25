@@ -7,6 +7,7 @@ import ChatRow from '../ChatRow/ChatRow';
 export default function ChatList() {
     const [matches, setMatches] = useState([]);
     const user = firebase.auth().currentUser;
+    const [imageUrl, setImageUrl] = useState([]);
 
     useEffect(() => {
         onSnapshot(firebase.firestore().collection("matches")
