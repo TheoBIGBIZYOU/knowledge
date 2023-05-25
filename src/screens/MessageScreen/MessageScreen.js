@@ -7,7 +7,7 @@ import Header from '../../components/Header/Header';
 import SenderMessage from '../../components/SenderMessage/SenderMessage';
 import ReceiverMessage from '../../components/ReceiverMessage/ReceiverMessage';
 import getMatchedUserInfo from '../../../lib/getMatchedUserInfo';
-import { onSnapshot, serverTimestamp, query, collection, orderBy } from 'firebase/firestore';
+import { onSnapshot, serverTimestamp, query, collection, orderBy, addDoc } from 'firebase/firestore';
 
 
 export default function MessageScreen() {
@@ -18,113 +18,101 @@ export default function MessageScreen() {
 
     const { matchDetails } = params;
 
+
+
     useEffect(() => {
-        // console.log(user.uid)
-        // console.log(matchDetails.id)
-        let query = firebase.firestore().collection("matches")
-        // query = query.where("matches", 'array-contains', matchDetails.id)
-        onSnapshot(query, async(snapshot) => {
-            snapshot.docs.forEach(match => {
-                if(match.id === matchDetails.id){
-                    let tabMessage = match.data().messages;
-                    console.log(tabMessage.userId);
-                    setMessages(messages => [...messages, tabMessage])
-                    // setMessages({
-                    //     id: tabMessage.userId,
-                    //     ...tabMessage
-                    // })
-                    console.log(messages);
-                    // console.log(messages);
-                    // setMessages(
-                    //     match.data().messages.map(doc => ({
-                    //         id: doc.id,
-                    //         ...doc.data()
-                    //     }))
-                    // );
-                    
-                }
-            })
-        })
-
-        // onSnapshot(firebase.firestore().collection("matches"), 
-        // (snapshot) => {
-        //      console.log(snapshot.docs)
-        // })
-
-
-        
-
-        // onSnapshot(
-        //     query(
-        //         collection(firebase.firestore(), "matches", matchDetails.id, "messages")
-        //         // .orderBy("timestamp", "desc")
-        //     ),
-        //     (snapshot) => {
-        //         console.log(snapshot.docs)
-        //     snapshot.docs.map(doc => {
-        //         console.log(doc.data())
-        //     })
-        //     //     setMessages(snapshot.docs.map(doc => (
-        //     //     {
-        //     //     id: doc.id,
-        //     //     ...doc.data()
-        //     // })
-        //     // ))
-        //     }
-        // )
+        onSnapshot(
+            query(
+                collection(firebase.firestore(), 'matches', matchDetails.id, "messages"),
+                orderBy("timestamp", "desc")
+            ), snapshot => {
+                setMessages(snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                })))
+            }
+        )
     }, [matchDetails, firebase.firestore()])
 
     const sendMessage = () => {
-        firebase.firestore().collection('matches')
-            .doc(matchDetails.id)
-            .set({
-                messages: {
-                    timestamp: serverTimestamp(),
-                    userId: user.uid,
-                    fullName: matchDetails.users[user.uid].fullName,
-                    photo: matchDetails.users[user.uid].image,
-                    message: input,
-                }
-            }, { merge: true })
-
+        addDoc(collection(firebase.firestore(), 'matches', matchDetails.id, 'messages'), {
+            timestamp: serverTimestamp(),
+            userId: user.uid,
+            fullName: matchDetails.users[user.uid].fullName,
+            photo: matchDetails.users[user.uid].image,
+            message: input,
+        })
         setInput("");
+
+        const matchId = matchDetails.id;
+
+        firebase.firestore()
+            .collection("matches")
+            .doc(matchId)
+            .get()
+            .then((doc) => {
+                if (doc.exists) {
+                    const matchData = doc.data();
+                    const startChat = matchData.startChat;
+
+                    if (!startChat) {
+                        firebase.firestore()
+                            .collection("matches")
+                            .doc(matchId)
+                            .update({ startChat: true })
+                            .then(() => {
+                                console.log("Champ startChat mis à jour avec succès !");
+                            })
+                            .catch((error) => {
+                                console.log("Erreur lors de la mise à jour du champ startChat :", error);
+                            });
+                    } else {
+                        console.log("Le champ startChat est déjà à true.");
+                    }
+                } else {
+                    console.log("Le document correspondant à matchId n'existe pas.");
+                }
+            })
+            .catch((error) => {
+                console.log("Erreur lors de la récupération des données :", error);
+            });
+
     };
 
     return (
-        <SafeAreaView>
+        <SafeAreaView style={{ flex: 1 }}>
             <Header title={getMatchedUserInfo(matchDetails?.users, user.uid).fullName} />
             <KeyboardAvoidingView
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
                 keyboardVerticalOffset={10}
+                style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', }} enabled
             >
-                { messages != undefined ? 
-                                <SenderMessage key={'0'} message={messages} />
-                    : <Text>j'ai pas</Text>
-                }
-                {/* <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     <FlatList
                         data={messages}
+                        inverted={-1}
                         keyExtractor={item => item.id}
                         renderItem={({ item: message }) =>
                             message.userId === user.uid ? (
-                                <SenderMessage key={message.id} messages={message} />
+                                <SenderMessage key={message.id} message={message} />
                             ) : (
-                                <ReceiverMessage key={message.id} messages={message} />
+                                <ReceiverMessage key={message.id} message={message} />
                             )
                         }
                     />
-                </TouchableWithoutFeedback> */}
-            </KeyboardAvoidingView>
+                </TouchableWithoutFeedback>
 
-            <View>
-                <TextInput
-                    placeholder="Envoyer un message..."
-                    onChangeText={setInput}
-                    onSubmitEditing={sendMessage}
-                    value={input}
-                />
-                <Button onPress={sendMessage} title="Envoyer" />
-            </View>
+                <View style={{ backgroundColor: '#fff', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: 10 }}>
+                    <TextInput
+                        placeholder="Envoyer un message..."
+                        onChangeText={setInput}
+                        onSubmitEditing={sendMessage}
+                        value={input}
+                        style={{ width: '70%' }}
+                    />
+                    <Button onPress={sendMessage} title="Envoyer" />
+                </View>
+            </KeyboardAvoidingView>
         </SafeAreaView>
     )
 }
