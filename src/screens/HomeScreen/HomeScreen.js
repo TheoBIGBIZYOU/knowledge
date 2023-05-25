@@ -6,7 +6,6 @@ import SkillComponents from "../components/SkillComponents/SkillComponents";
 import Swiper from "react-native-deck-swiper";
 import { firebase } from "../../firebase/config";
 import { onSnapshot } from "firebase/firestore";
-import MenuComponents from "../components/MenuComponents/MenuComponents";
 
 export default function HomeScreen({navigation, props}) {
     const [profiles, setProfiles] = useState([]);
@@ -20,11 +19,19 @@ export default function HomeScreen({navigation, props}) {
     const user = firebase.auth().currentUser;
 
     useEffect(() => {
+
         onSnapshot(firebase.firestore().collection("users").where("id", "==", user.uid), (snapshot) => {
             snapshot.docs.forEach(user => {
+                let alreadyPassed;
+                let alreadyLiked;
+
+                alreadyPassed = user.data().passes;
+                alreadyLiked = user.data().matches;
+
                 setUserRole(user.data().role);
                 if(user.data().role === 'newbie') {
                     let resultsImage = []
+                    let resultsFilter = []
                     onSnapshot(firebase.firestore().collection("users").where("role", "==", "mentor"), async(snapshot) => {
                         let results = []
                         for( let i = 0; i < snapshot.docs.length; i++){
@@ -35,10 +42,23 @@ export default function HomeScreen({navigation, props}) {
                             results.push({ ...snapshot.docs[i].data(), id: snapshot.docs[i].id })
                             resultsImage.push(url)
                         }
+
+                        resultsFilter = results;
+
+                        if(alreadyPassed) {
+                            resultsFilter = results.filter(element => {
+                                return !alreadyPassed.includes(element.id);
+                            });
+                        }
+
+                        if(alreadyLiked) {
+                            resultsFilter = results.filter(element => {
+                                return !alreadyLiked.includes(element.id);
+                            });
+                        }
+
                         setImageUrl(resultsImage);
                         setProfiles(results);
-
-
                     })
                 } else {
                     let query = firebase.firestore().collection("users")
@@ -46,6 +66,7 @@ export default function HomeScreen({navigation, props}) {
                     query = query.where("matches", 'array-contains', user.data().id) 
                     onSnapshot(query, async (snapshot) => {
                         let results = []
+                        let resultsFilter = []
                         let resultsImage = []
                         for( let i = 0; i < snapshot.docs.length; i++){
                             const url = await firebase.storage()
@@ -55,9 +76,24 @@ export default function HomeScreen({navigation, props}) {
                             results.push({ ...snapshot.docs[i].data(), id: snapshot.docs[i].id })
                             resultsImage.push(url)
                         }
-                        setImageUrl(resultsImage);
-                        setProfiles(results);
 
+                        resultsFilter = results;
+
+                        if(alreadyPassed) {
+                            resultsFilter = results.filter(element => {
+                                return !alreadyPassed.includes(element.id);
+                            });
+                        }
+
+
+                        if(alreadyLiked) {
+                            resultsFilter = results.filter(element => {
+                                return !alreadyLiked.includes(element.id);
+                            });
+                        }
+
+                        setImageUrl(resultsImage);
+                        setProfiles(resultsFilter);
                     })      
                 }
             })
@@ -65,7 +101,7 @@ export default function HomeScreen({navigation, props}) {
 
     }, []);
 
-    const swipeLeft = async (cardIndex) => {
+    const swipeLeft = (cardIndex) => {
         if(!profiles[cardIndex]) return;
 
         const userSwiped = profiles[cardIndex];
@@ -102,7 +138,7 @@ export default function HomeScreen({navigation, props}) {
         .then(() => {})
         .catch((error) => {
             alert(error)
-        });
+        });        
 
     }
 
@@ -110,10 +146,10 @@ export default function HomeScreen({navigation, props}) {
         <Fragment>
             <SafeAreaView style={{ flex:0, backgroundColor: '#161241' }} />
             <SafeAreaView style={{flex: 1}}>
-                <View style={styles.container}>
-                    <View style={styles.background} ></View>
-                    {userRole === 'newbie' ? <Text style={styles.title}>Cherche ton mentor</Text> : <Text style={styles.title}>Choisis ton apprenti</Text>}
-                    { currentUserIndex < profiles.length ?
+                <SafeAreaView>
+                    <View style={styles.container}>
+                        <View style={styles.background}></View>
+                        {userRole === 'newbie' ? <Text style={styles.title}>Cherche ton mentor</Text> : <Text style={styles.title}>Choisis ton apprenti</Text>}
                         <Swiper
                             ref={swipeRef}
                             containerStyle={{ backgroundColor: 'transparent' }}
@@ -130,7 +166,7 @@ export default function HomeScreen({navigation, props}) {
                                 swipeRight(cardIndex);
                                 setCurrentUserIndex(currentUserIndex+1);
                             }}
-                            renderCard={(card, index) => (
+                            renderCard={(card, index) => card ? (
                                 <View key={card.id}
                                       style={[styles.card, styles.cardShadow]}
                                 >
@@ -173,84 +209,73 @@ export default function HomeScreen({navigation, props}) {
                                         </View>
                                     </View>
                                     <Text style={styles.descr}>{card.description}</Text>
-
                                     <View style={styles.skills}>
-                                        {
-                                            card.skills.length > 0 ?
-                                                card.skills.map((item, index) => {
-                                                    return (
-                                                        <SkillComponents text={item} state={'selected'} key={index} />
-                                                    )
-                                                })
-                                                : <Text>Pas de compétences renseignées</Text>
-                                        }
+                                        <SkillComponents text={'ttt'} state={'selected'} />
+                                        <SkillComponents text={'ttt'} state={'selected'} />
+                                        <SkillComponents text={'ttt'} state={'selected'} />
+                                        <SkillComponents text={'ttt'} state={'selected'} />
+                                        <SkillComponents text={'ttt'} state={'selected'} />
                                     </View>
-                                </View> )
-                        } />
-                        :
-                            <View style={[styles.card, styles.cardShadow, styles.noProfiles]}>
-                                <View style={styles.shadow}>
-                                    {/*<Image*/}
-                                    {/*    style={styles.userImage}*/}
-                                    {/*    source={{ uri: imageUrl[index] }}*/}
-                                    {/*/>*/}
                                 </View>
-                                <Text>Aucun autre profil</Text>
-                            </View>
-                        }
-                    <View style={styles.actions}>
-                        <TouchableOpacity
-                            onPress={() => swipeRef.current.swipeLeft()}
-                            style={[styles.actionsButton, styles.shadow]}
-                        >
-                            <Svg
-                                width={30}
-                                height={30}
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
+                            ) : (
+                                <View style={[styles.card, styles.cardShadow]}>
+                                    <Text>Aucun autre profil</Text>
+                                </View>
+                            )}
+
+                        />
+                        <View style={styles.actions}>
+                            <TouchableOpacity
+                                onPress={() => swipeRef.current.swipeLeft()}
+                                style={[styles.actionsButton, styles.shadow]}
                             >
-                                <Path
-                                    fillRule="evenodd"
-                                    clipRule="evenodd"
-                                    d="M23.564 8.064a1.15 1.15 0 0 0-1.626-1.628L15 13.374 8.064 6.436a1.151 1.151 0 0 0-1.628 1.628L13.374 15l-6.938 6.936a1.151 1.151 0 1 0 1.628 1.628L15 16.626l6.938 6.938a1.15 1.15 0 1 0 1.626-1.628L16.626 15l6.938-6.936Z"
-                                    fill="#E94045"
-                                />
-                            </Svg>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={[styles.actionsButton, styles.actionSeeButton, styles.shadow]} onPress={()=>{
-                            navigation.navigate('Profil',{ profil: profiles[currentUserIndex] });
-                        }}>
-                            <Svg
-                                width={30}
-                                height={30}
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
+                                <Svg
+                                    width={30}
+                                    height={30}
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <Path
+                                        fillRule="evenodd"
+                                        clipRule="evenodd"
+                                        d="M23.564 8.064a1.15 1.15 0 0 0-1.626-1.628L15 13.374 8.064 6.436a1.151 1.151 0 0 0-1.628 1.628L13.374 15l-6.938 6.936a1.151 1.151 0 1 0 1.628 1.628L15 16.626l6.938 6.938a1.15 1.15 0 1 0 1.626-1.628L16.626 15l6.938-6.936Z"
+                                        fill="#E94045"
+                                    />
+                                </Svg>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={[styles.actionsButton, styles.actionSeeButton, styles.shadow]} onPress={()=>{
+                                navigation.navigate('Profil',{ profil: profiles[currentUserIndex] });
+                            }}>
+                                <Svg
+                                    width={30}
+                                    height={30}
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <Path
+                                        d="M15 8.125A12.212 12.212 0 0 1 26.025 15 12.199 12.199 0 0 1 15 21.875c-4.75 0-8.963-2.663-11.025-6.875A12.212 12.212 0 0 1 15 8.125Zm0-2.5C8.75 5.625 3.412 9.512 1.25 15c2.163 5.488 7.5 9.375 13.75 9.375S26.587 20.488 28.75 15C26.587 9.512 21.25 5.625 15 5.625Zm0 6.25a3.125 3.125 0 1 1 0 6.25 3.125 3.125 0 0 1 0-6.25Zm0-2.5A5.633 5.633 0 0 0 9.375 15c0 3.1 2.525 5.625 5.625 5.625S20.625 18.1 20.625 15 18.1 9.375 15 9.375Z"
+                                        fill="#54ADFA"
+                                    />
+                                </Svg>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() => swipeRef.current.swipeRight()}
+                                style={[styles.actionsButton, styles.shadow]}
                             >
-                                <Path
-                                    d="M15 8.125A12.212 12.212 0 0 1 26.025 15 12.199 12.199 0 0 1 15 21.875c-4.75 0-8.963-2.663-11.025-6.875A12.212 12.212 0 0 1 15 8.125Zm0-2.5C8.75 5.625 3.412 9.512 1.25 15c2.163 5.488 7.5 9.375 13.75 9.375S26.587 20.488 28.75 15C26.587 9.512 21.25 5.625 15 5.625Zm0 6.25a3.125 3.125 0 1 1 0 6.25 3.125 3.125 0 0 1 0-6.25Zm0-2.5A5.633 5.633 0 0 0 9.375 15c0 3.1 2.525 5.625 5.625 5.625S20.625 18.1 20.625 15 18.1 9.375 15 9.375Z"
-                                    fill="#54ADFA"
-                                />
-                            </Svg>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            onPress={() => swipeRef.current.swipeRight()}
-                            style={[styles.actionsButton, styles.shadow]}
-                        >
-                            <Svg
-                                width={55}
-                                height={55}
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                            >
-                                <Path
-                                    d="m23.75 39.542-10-10 3.5-3.5 6.5 6.5 16.5-16.5 3.5 3.5-20 20Z"
-                                    fill="#44AB6F"
-                                />
-                            </Svg>
-                        </TouchableOpacity>
+                                <Svg
+                                    width={55}
+                                    height={55}
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <Path
+                                        d="m23.75 39.542-10-10 3.5-3.5 6.5 6.5 16.5-16.5 3.5 3.5-20 20Z"
+                                        fill="#44AB6F"
+                                    />
+                                </Svg>
+                            </TouchableOpacity>
+                        </View>
                     </View>
-                </View>
-            </SafeAreaView>
             <SafeAreaView style={{ flex: 0, backgroundColor: '#161241' }} >
                 <MenuComponents navigation={navigation}/>
             </SafeAreaView>
