@@ -102,7 +102,7 @@ export default function MessageScreen() {
                     />
                 </TouchableWithoutFeedback>
 
-                <View style={{ backgroundColor: '#fff', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: 10 }}>
+                <View style={{ backgroundColor: '#fff', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: 10, marginTop: 10 }}>
                     <TextInput
                         placeholder="Envoyer un message..."
                         onChangeText={setInput}

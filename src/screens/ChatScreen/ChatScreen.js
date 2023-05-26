@@ -2,17 +2,16 @@ import { Text, View, Image, SafeAreaView, TouchableOpacity, ScrollView } from 'r
 import React, { Fragment, useEffect, useState } from 'react'
 import styles from './styles';
 import { firebase } from "../../firebase/config";
-import { onSnapshot } from "firebase/firestore";
+// import { onSnapshot } from "firebase/firestore";
 import ChatList from '../../components/ChatList/ChatList';
-import Header from '../../components/Header/Header';
 import { useNavigation } from '@react-navigation/native';
 import MenuComponents from "../../components/MenuComponents/MenuComponents";
 
 
 export default function ChatScreen() {
-    const [userRole, setUserRole] = useState('');
-    const [imageUrl, setImageUrl] = useState([]);
-    const [newChatUser, setNewChatUser] = useState([]);
+    // const [userRole, setUserRole] = useState('');
+    // const [imageUrl, setImageUrl] = useState([]);
+    // const [newChatUser, setNewChatUser] = useState([]);
     const user = firebase.auth().currentUser;
     const navigation = useNavigation();
 
@@ -52,7 +51,6 @@ export default function ChatScreen() {
         <Fragment>
             <SafeAreaView style={{ flex:0, backgroundColor: '#161241' }} />
             <SafeAreaView style={{flex: 1}}>
-                {/*<Header title="Chat"/>*/}
                 <View style={styles.container}>
                     <View style={styles.background}></View>
                     <View style={styles.startChat}>
