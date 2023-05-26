@@ -11,6 +11,16 @@ export default StyleSheet.create({
         borderRadius: 10,
         borderWidth: 1,
         borderColor: '#fff',
-        overflow: 'hidden'
-    }
+        overflow: 'hidden',
+        marginLeft: 60
+    },
+    receiverMessageImage: {
+        width: 40,
+        height: 40,
+        borderRadius: 100,
+        overflow: 'hidden',
+        marginLeft: 10,
+        position: 'absolute',
+        top: 0
+    },
 })

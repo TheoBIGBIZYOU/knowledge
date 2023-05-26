@@ -13,8 +13,12 @@ export default StyleSheet.create({
         marginRight: 14,
         width: '20%'
     },  
+    cardChatRight: {
+        width: '80%'
+    },
     cardChatName: {
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        marginBottom: 8
     },
     cardChatMessage: {
         width: '80%'
