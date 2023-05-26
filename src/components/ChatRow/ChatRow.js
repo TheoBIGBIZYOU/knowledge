@@ -5,17 +5,17 @@ import { firebase } from "../../firebase/config";
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import getMatchedUserInfo from '../../../lib/getMatchedUserInfo';
 import { useNavigation } from '@react-navigation/native';
+import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 
 export default function ChatRow({ matchDetails }) {
     const navigation = useNavigation();
     const user = firebase.auth().currentUser;
     const [matchedUserInfo, setMatchedUserInfo] = useState(null);
-    const [urlImage, setUrlImage] = useState('');
+    const [lastMessage, setLastMessage] = useState('');
 
     useEffect(() => {
         let resultsImage = []
         setMatchedUserInfo(getMatchedUserInfo(matchDetails.users, user.uid));
-        console.log(matchedUserInfo)
         // const url = firebase.storage()
         //     .ref('/' + matchedUserInfo.image) //name in storage in firebase console
         //     .getDownloadURL()
@@ -24,6 +24,10 @@ export default function ChatRow({ matchDetails }) {
         // setUrlImage(resultsImage);
 
     }, [matchDetails, user]);
+
+    useEffect(() => onSnapshot(query(collection(firebase.firestore(),'matches', matchDetails.id, 'messages'), orderBy('timestamp', 'desc')
+    ), snapshot => setLastMessage(snapshot.docs[0]?.data()?.message)
+    ), [matchDetails, firebase.firestore()])
 
 
 
@@ -40,7 +44,7 @@ export default function ChatRow({ matchDetails }) {
             </View>
             <View style={styles.cardChatRight}>
                 <Text style={styles.cardChatName}>{matchedUserInfo?.fullName}</Text>
-                {/* <Text style={styles.cardChatMessage}>{urlImage}</Text> */}
+                <Text style={styles.cardChatMessage}>{lastMessage || "Démarrer la conversation 👋"}</Text>
             </View>
         </TouchableOpacity>
     )

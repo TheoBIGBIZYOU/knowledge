@@ -8,7 +8,7 @@ export default StyleSheet.create({
     headerContainerBtn: {
         position: 'absolute',
         top: -12,
-        left: 0
+        left: 0,
     },
     headerContainerTitle: {
         width: '100%',

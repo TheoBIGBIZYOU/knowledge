@@ -113,7 +113,8 @@ export default function HomeScreen({navigation, props}) {
                     [userId]: userInfos,
                     [userSwipeId]: userSwipedInfos
                 },
-                usersMatched: [userId, userSwipeId]
+                usersMatched: [userId, userSwipeId],
+                startChat: false
             };
 
             matchesRef

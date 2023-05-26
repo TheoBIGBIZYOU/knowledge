@@ -10,7 +10,10 @@ export default function Header({title}) {
     return (
         <View>
             <View style={styles.headerContainer}>
-                <TouchableOpacity style={styles.headerContainerBtn} onPress={() => navigation.goBack()}>
+                <TouchableOpacity style={styles.headerContainerBtn} onPress={() => {
+                    console.log("je clique")
+                    navigation.goBack()
+                }}>
                     <Ionicons name='chevron-back-outline' size={34} color={'#161241'} />
                 </TouchableOpacity>
                 <Text style={styles.headerContainerTitle}>{title}</Text>

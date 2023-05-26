@@ -5,7 +5,7 @@ import { onSnapshot } from 'firebase/firestore';
 import ChatRow from '../ChatRow/ChatRow';
 import styles from './styles';
 
-export default function ChatList() {
+export default function ChatList({startNewChat}) {
     const [matches, setMatches] = useState([]);
     const user = firebase.auth().currentUser;
     const [imageUrl, setImageUrl] = useState([]);
@@ -25,14 +25,13 @@ export default function ChatList() {
     }, [user]);
 
     return matches.length > 0 ? (
+        !startNewChat ? (
         <FlatList
             data={matches}
             keyExtractor={item => item.id}
             renderItem={({item}) => <ChatRow matchDetails={item}/>}
-        />
+        /> ) : ( <Text>New chat</Text> )
     ) : (
-        <View>
-            <Text>Aucune discussion de disponible</Text>
-        </View>
+        <Text style={{color: '#fff'}}>Aucune conversation de disponible pour le moment.</Text>
     );
 }
