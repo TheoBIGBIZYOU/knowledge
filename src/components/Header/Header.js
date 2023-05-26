@@ -7,17 +7,25 @@ import { useNavigation } from '@react-navigation/native';
 
 export default function Header({title}) {
     const navigation = useNavigation();
+
+    function backPress(){
+        navigation.goBack()
+    }
+
     return (
         <View>
-            <View style={styles.headerContainer}>
-                <TouchableOpacity style={styles.headerContainerBtn} onPress={() => {
-                    console.log("je clique")
-                    navigation.goBack()
+            <TouchableOpacity style={styles.headerContainer}
+                onPress={() => {
+                    backPress()
                 }}>
-                    <Ionicons name='chevron-back-outline' size={34} color={'#161241'} />
-                </TouchableOpacity>
+                {/*<TouchableOpacity style={styles.headerContainerBtn} onPress={() => {*/}
+                {/*    console.log("je clique")*/}
+                {/*    // navigation.navigate('Chat')*/}
+                {/*}}>*/}
+                    <Ionicons style={styles.headerContainerBtn} name='chevron-back-outline' size={34} color={'#161241'} />
+                {/*</TouchableOpacity>*/}
                 <Text style={styles.headerContainerTitle}>{title}</Text>
-            </View>
+            </TouchableOpacity>
         </View>
     )
 }
