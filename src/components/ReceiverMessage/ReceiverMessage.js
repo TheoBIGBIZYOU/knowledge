@@ -11,7 +11,6 @@ export default function ReceiverMessage({ message }) {
         const fetchImage = async () => {
             try {
               const gsUrl = `gs://knowledge-cf905.appspot.com/${message.photo}`;
-              console.log(gsUrl);
               const url = await storage.refFromURL(gsUrl).getDownloadURL();
               setImageUrl(url);
             } catch (error) {
