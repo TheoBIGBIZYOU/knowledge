@@ -1,22 +1,30 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { Image, Text, View, Pressable, TextInput, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import styles from './styles';
-import Svg, {Circle, Path} from "react-native-svg";
+import Svg, { Circle, Path } from "react-native-svg";
 import * as ImagePicker from 'expo-image-picker';
 import { firebase } from "../../firebase/config";
 import ButtonComponents from "../../components/ButtonComponents/ButtonComponents";
 import RNPickerSelect from "react-native-picker-select";
 import skillJSON from '../../../assets/json/skills.json';
-import {Platform} from 'react-native';
+import { Platform } from 'react-native';
 import SkillComponents from "../../components/SkillComponents/SkillComponents";
 import HorizontalBar from "../../components/HorizontalBar/HorizontalBar";
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { useNavigation } from '@react-navigation/native';
 
 
-import { onSnapshot }from 'firebase/firestore'
+
+import { onSnapshot } from 'firebase/firestore'
 
 const imagetest = "https://cdn.smehost.net/sonymusicfr-frprod/wp-content/uploads/2022/02/Vald.jpeg";
 
-export default function FirstConnectionScreen({navigation}) {
+export default function FirstConnectionScreen() {
+    const navigation = useNavigation();
+
+    function backPress() {
+        navigation.goBack()
+    }
 
     const [photo, setPhoto] = useState(imagetest);
     const [nextPart, setNextPart] = useState(false);
@@ -36,27 +44,27 @@ export default function FirstConnectionScreen({navigation}) {
         const unSubscribe = onSnapshot(dataUser, (snapshot) => {
             let results = []
             snapshot.docs.forEach(userInfo => {
-                results.push({...userInfo.data(), id: userInfo.id})
+                results.push({ ...userInfo.data(), id: userInfo.id })
             })
             setUserInfo(results[0])
         })
 
-        if(userInfo.description != undefined) setDescription(userInfo.description);
-        if(userInfo.skills != undefined) setSkill(userInfo.skills);
-        if(userInfo.urlPerso != undefined) setUserLink(userInfo.urlPerso);
-    },[]);
+        if (userInfo.description != undefined) setDescription(userInfo.description);
+        if (userInfo.skills != undefined) setSkill(userInfo.skills);
+        if (userInfo.urlPerso != undefined) setUserLink(userInfo.urlPerso);
+    }, []);
 
 
     async function uploadImage() {
         const response = await fetch(photo);
         const blob = await response.blob();
-        const filename = photo.substring(photo.lastIndexOf('/')+1);
+        const filename = photo.substring(photo.lastIndexOf('/') + 1);
         var ref = firebase.storage().ref().child(filename).put(blob);
 
         try {
             await ref;
         }
-        catch(e){
+        catch (e) {
             console.log(e);
         }
     }
@@ -64,7 +72,7 @@ export default function FirstConnectionScreen({navigation}) {
     function updateDescription() {
         firebase.firestore().collection('users')
             .doc(user.uid)
-            .set({description: description}, {merge: true})
+            .set({ description: description }, { merge: true })
             .then(() => {
                 setNextPart(!nextPart);
             })
@@ -75,9 +83,9 @@ export default function FirstConnectionScreen({navigation}) {
 
     function updateSkillAndPhoto() {
         const data = {
-            image : photo.substring(photo.lastIndexOf('/')+1),
-            skills : skill,
-            urlPerso : userLink,
+            image: photo.substring(photo.lastIndexOf('/') + 1),
+            skills: skill,
+            urlPerso: userLink,
         };
 
         //upload image
@@ -85,7 +93,7 @@ export default function FirstConnectionScreen({navigation}) {
 
         firebase.firestore().collection('users')
             .doc(user.uid)
-            .set(data, {merge: true})
+            .set(data, { merge: true })
             .then(() => {
                 navigation.navigate('Home')
             })
@@ -100,7 +108,7 @@ export default function FirstConnectionScreen({navigation}) {
         setDescription("");
     }
 
-    function resetSkill(){
+    function resetSkill() {
         setSkill([]);
     }
 
@@ -132,6 +140,12 @@ export default function FirstConnectionScreen({navigation}) {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}
             accessible={false}>
             <View style={styles.container}>
+                <TouchableOpacity style={styles.headerContainer}
+                    onPress={() => {
+                        backPress()
+                    }}>
+                    <Ionicons style={styles.headerContainerBtn} name='chevron-back-outline' size={34} color={'#fff'} />
+                </TouchableOpacity>
                 <View style={styles.topContainer}>
                     <Pressable style={styles.userImageContainer} onPress={async () => {
 
@@ -144,7 +158,7 @@ export default function FirstConnectionScreen({navigation}) {
                         if (!result.canceled) {
                             setPhoto(result.assets[0].uri);
                         }
-                        else{
+                        else {
                             console.log("cancel");
                         }
                     }
@@ -256,13 +270,13 @@ export default function FirstConnectionScreen({navigation}) {
                                 skill.map((item) => {
                                     return (
                                         <TouchableOpacity key={item} style={styles.skillItem}>
-                                            <SkillComponents text={item} state={'enable'} onPress={()=>{
+                                            <SkillComponents text={item} state={'enable'} onPress={() => {
                                                 let newSkills = [];
                                                 newSkills.push(...skill);
                                                 let index = newSkills.indexOf(item);
-                                                newSkills.splice(index,1);
+                                                newSkills.splice(index, 1);
                                                 setSkill(newSkills);
-                                            }}/>
+                                            }} />
                                         </TouchableOpacity>
                                     )
                                 })
@@ -277,34 +291,34 @@ export default function FirstConnectionScreen({navigation}) {
                             }}
                             selectedValue={selectedSkill}
                             onValueChange={(itemValue, itemIndex) => {
-                                if(Platform.OS !== 'ios'){
-                                    if(selectedSkill === null){
+                                if (Platform.OS !== 'ios') {
+                                    if (selectedSkill === null) {
                                         alert('Veuillez selectionner une compétence')
                                     }
-                                    else if(skill.includes(selectedSkill)){
+                                    else if (skill.includes(selectedSkill)) {
                                         setSelectedSkill(null)
                                         alert('Cette compétence a déjà été selectionnée')
                                     }
-                                    else{
-                                        setSkill([...skill,selectedSkill])
+                                    else {
+                                        setSkill([...skill, selectedSkill])
                                         setSelectedSkill(null)
                                     }
                                 }
-                                else{
+                                else {
                                     setSelectedSkill(itemValue);
                                 }
                             }
                             }
-                            onDonePress={ () => {
-                                if(selectedSkill === null){
+                            onDonePress={() => {
+                                if (selectedSkill === null) {
                                     alert('Veuillez selectionner une compétence')
                                 }
-                                else if(skill.includes(selectedSkill)){
+                                else if (skill.includes(selectedSkill)) {
                                     setSelectedSkill(null)
                                     alert('Cette compétence a déjà été selectionnée')
                                 }
-                                else{
-                                    setSkill([...skill,selectedSkill])
+                                else {
+                                    setSkill([...skill, selectedSkill])
                                     setSelectedSkill(null)
                                 }
                             }
@@ -325,7 +339,7 @@ export default function FirstConnectionScreen({navigation}) {
                                         autoCapitalize="none"
                                     />
                                 </View>
-                            :
+                                :
                                 null
                         }
                     </View>

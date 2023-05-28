@@ -1,6 +1,11 @@
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
+    headerContainer: {
+        position: 'absolute',
+        top: 45,
+        left: 20
+    },
     container: {
         backgroundColor: '#161241',
         height: "100%",
