@@ -272,7 +272,9 @@ export default function HomeScreen({navigation, props}) {
                         }
                         <View style={styles.actions}>
                             <TouchableOpacity
-                                onPress={() => swipeRef.current.swipeLeft()}
+                                onPress={() => {
+                                    {swipeRef.current != null ? swipeRef.current.swipeLeft() : null }
+                                }}
                                 style={[styles.actionsButton, styles.shadow]}
                             >
                                 <Svg
@@ -290,7 +292,8 @@ export default function HomeScreen({navigation, props}) {
                                 </Svg>
                             </TouchableOpacity>
                             <TouchableOpacity style={[styles.actionsButton, styles.actionSeeButton, styles.shadow]} onPress={()=>{
-                                navigation.navigate('Profil',{ profil: profiles[currentUserIndex] });
+
+                                {swipeRef.current != null ? navigation.navigate('Profil',{ profil: profiles[currentUserIndex] }) : null }
                             }}>
                                 <Svg
                                     width={30}
@@ -305,7 +308,9 @@ export default function HomeScreen({navigation, props}) {
                                 </Svg>
                             </TouchableOpacity>
                             <TouchableOpacity
-                                onPress={() => swipeRef.current.swipeRight()}
+                                onPress={() => {
+                                    {swipeRef.current != null ? swipeRef.current.swipeRight() : null }
+                                }}
                                 style={[styles.actionsButton, styles.shadow]}
                             >
                                 <Svg

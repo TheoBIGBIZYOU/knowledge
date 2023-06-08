@@ -162,9 +162,6 @@ export default function FirstConnectionScreen() {
                         if (!result.canceled) {
                             setPhoto(result.assets[0].uri);
                         }
-                        else {
-                            console.log("cancel");
-                        }
                     }
                     }>
                         <Image
