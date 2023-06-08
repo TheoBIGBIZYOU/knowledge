@@ -11,10 +11,13 @@ export default function RegistrationScreen({navigation}) {
     const [password, setPassword] = useState('')
     const [selectedRole, setSelectedRole] = useState(null);
 
+    //function for redirect to login screen
     const onFooterLinkPress = () => {
         navigation.navigate('Login')
     }
 
+    //function to create user.
+    //we check if role is selected and then we create the user with info insert before
     const onRegisterPress = () => {
         if(selectedRole === null) {
             alert('Veuillez sélectionner un rôle')

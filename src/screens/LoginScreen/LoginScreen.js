@@ -9,10 +9,13 @@ export default function LoginScreen({navigation}) {
     const [email, setEmail] = useState('valentindiev62@gmail.com')
     const [password, setPassword] = useState('testtest')
 
+    //function redirect to Registration screen
     const onFooterLinkPress = () => {
         navigation.navigate('Registration')
     }
 
+    //function for login the user. We check with the database if the user exist, if yes, we connect
+    //the user, if no, we return error message
     const onLoginPress = () => {
         firebase
             .auth()
@@ -41,6 +44,7 @@ export default function LoginScreen({navigation}) {
             })
     }
 
+    //function for reset the password by mail
     function onResetPress() {
         firebase
             .auth()

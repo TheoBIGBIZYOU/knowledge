@@ -19,7 +19,9 @@ export default function MessageScreen() {
     const { matchDetails } = params;
 
 
-
+    //Here we get all message in table matches where the matchId = matchDetails.id
+    //we order by timestamp
+    //then we stock this elements in the array messages
     useEffect(() => {
         onSnapshot(
             query(

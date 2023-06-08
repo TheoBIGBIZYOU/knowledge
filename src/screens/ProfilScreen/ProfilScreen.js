@@ -12,6 +12,7 @@ export default function ProfilScreen({ route, navigation: { goBack } }) {
     const [userInfo, setUserInfo] = useState(route.params.profil)
     const [userImage, setUserImage] = useState()
 
+    //in this useEffect, we get the url of user Image in the database
     useEffect(() => {
         firebase.storage()
             .ref('/' + userInfo.image) //name in storage in firebase console

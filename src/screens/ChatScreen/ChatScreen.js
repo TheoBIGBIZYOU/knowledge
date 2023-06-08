@@ -9,43 +9,8 @@ import MenuComponents from "../../components/MenuComponents/MenuComponents";
 
 
 export default function ChatScreen() {
-    // const [userRole, setUserRole] = useState('');
-    // const [imageUrl, setImageUrl] = useState([]);
-    // const [newChatUser, setNewChatUser] = useState([]);
     const user = firebase.auth().currentUser;
     const navigation = useNavigation();
-
-    // useEffect(() => {
-    //     onSnapshot(firebase.firestore().collection("users").where("id", "==", user.uid), (snapshot) => {
-    //         snapshot.docs.forEach(user => {
-    //             setUserRole(user.data().role);
-
-    //             let query = firebase.firestore().collection("users")
-    //             if(user.data().role === 'newbie') {
-    //                 query = query.where("role", "==", "mentor")
-    //             } else {
-    //                 query = query.where("role", "==", "newbie")
-    //             }
-    //             query = query.where("matches", 'array-contains', user.data().id)
-    //             query = query.where("startChat", '==', false)
-
-    //             onSnapshot(query, (snapshot) => {
-    //                 let chatUser = [];
-    //                 let resultsImage = [];
-    //                 snapshot.docs.forEach(async (user, i) => {
-    //                     chatUser.push(user.data());
-    //                     const url = await firebase.storage()
-    //                         .ref('/' + snapshot.docs[i].data().image) //name in storage in firebase console
-    //                         .getDownloadURL()
-    //                     resultsImage.push(url)
-    //                     setImageUrl(resultsImage);
-    //                 })
-    //                 setNewChatUser(chatUser);
-    //             })
-    //         })
-    //     })
-
-    // }, []);
 
     return (
         <Fragment>
@@ -57,34 +22,6 @@ export default function ChatScreen() {
                         <View style={styles.startChatContainer}>
                             <Text style={styles.startChat}>Vos conversations</Text>
                         </View>
-                        {/* <ScrollView
-                            horizontal={true}
-                            showsHorizontalScrollIndicator={false}
-                            contentContainerStyle={styles.chatContainer}
-                        >
-                            {
-                                newChatUser.length > 0 ?
-                                    newChatUser.map((item, index) => {
-                                        return (
-                                            // <TouchableOpacity
-                                            //     key={index}
-                                            //     style={styles.btnStartChat}
-                                            //     onPress={() => navigation.navigate('Message', {
-
-                                            //     })}
-                                            // >
-                                            //     <Image
-                                            //         style={styles.userImage}
-                                            //         source={{ uri: imageUrl[index] }}
-                                            //     />
-                                            //     <Text style={styles.userName}>{item.fullName}</Text>
-                                            // </TouchableOpacity>
-                                            <ChatList key={index} startNewChat={true}/>
-                                        )
-                                    })
-                                    : <Text style={styles.descriptionText}>Aucun chat disponible</Text>
-                            }
-                        </ScrollView> */}
                     </View>
                     <View style={styles.chatsContainer}>
                         <ChatList startNewChat={false}/>

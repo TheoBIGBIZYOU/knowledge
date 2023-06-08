@@ -41,6 +41,7 @@ export default function FirstConnectionScreen() {
 
     useEffect(() => {
         const dataUser = firebase.firestore().collection("users").where("id", "==", user.uid)
+        //we get the userIndo
         const unSubscribe = onSnapshot(dataUser, (snapshot) => {
             let results = []
             snapshot.docs.forEach(userInfo => {
@@ -55,6 +56,7 @@ export default function FirstConnectionScreen() {
     }, []);
 
 
+    //we upload the image in firebase
     async function uploadImage() {
         const response = await fetch(photo);
         const blob = await response.blob();
@@ -69,6 +71,7 @@ export default function FirstConnectionScreen() {
         }
     }
 
+    //set new Description
     function updateDescription() {
         firebase.firestore().collection('users')
             .doc(user.uid)
@@ -81,6 +84,7 @@ export default function FirstConnectionScreen() {
             });
     }
 
+    //set new skills and photo
     function updateSkillAndPhoto() {
         const data = {
             image: photo.substring(photo.lastIndexOf('/') + 1),
@@ -107,7 +111,7 @@ export default function FirstConnectionScreen() {
         setCount(0);
         setDescription("");
     }
-
+    //reset skills
     function resetSkill() {
         setSkill([]);
     }

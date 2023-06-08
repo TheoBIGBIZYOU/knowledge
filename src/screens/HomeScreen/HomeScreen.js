@@ -26,8 +26,9 @@ export default function HomeScreen({navigation, props}) {
             snapshot.docs.forEach(user => {
                 let alreadyPassed;
                 let alreadyLiked;
-
+                //set alreayPassed with db
                 alreadyPassed = user.data().passes;
+                //set alreayPassed with db
                 alreadyLiked = user.data().matches;
 
                 setUserInfos(user.data());
@@ -38,6 +39,8 @@ export default function HomeScreen({navigation, props}) {
                     let resultsFilter = []
                     onSnapshot(firebase.firestore().collection("users").where("role", "==", "mentor"), async(snapshot) => {
                         let results = []
+
+                        //get all image url on firebase storage
                         for( let i = 0; i < snapshot.docs.length; i++){
                             const url = await firebase.storage()
                                 .ref('/' + snapshot.docs[i].data().image) //name in storage in firebase console
@@ -48,13 +51,14 @@ export default function HomeScreen({navigation, props}) {
                         }
 
                         resultsFilter = results;
-
+                        //see if user already passed
                         if(alreadyPassed) {
                             resultsFilter = results.filter(element => {
                                 return !alreadyPassed.includes(element.id);
                             });
                         }
 
+                        //see if user already liked
                         if(alreadyLiked) {
                             resultsFilter = results.filter(element => {
                                 return !alreadyLiked.includes(element.id);
@@ -83,6 +87,7 @@ export default function HomeScreen({navigation, props}) {
 
                         resultsFilter = results;
 
+                        //see if user already passed
                         if(alreadyPassed) {
                             resultsFilter = results.filter(element => {
                                 return !alreadyPassed.includes(element.id);
@@ -90,6 +95,7 @@ export default function HomeScreen({navigation, props}) {
                         }
 
 
+                        //see if user already liked
                         if(alreadyLiked) {
                             resultsFilter = results.filter(element => {
                                 return !alreadyLiked.includes(element.id);
@@ -104,6 +110,7 @@ export default function HomeScreen({navigation, props}) {
         })
     }, []);
 
+    //mentor can only see newbie who match with them
     const createMatchesCollection = (userId, userSwipeId, userInfos, userSwipedInfos) => {
         if(userRole === 'mentor') {    
             
@@ -126,7 +133,7 @@ export default function HomeScreen({navigation, props}) {
             });
         }
     }
-
+    //event for card when we swiper left
     const swipeLeft = (cardIndex) => {
         if(!profiles[cardIndex]) return;
 
@@ -146,7 +153,7 @@ export default function HomeScreen({navigation, props}) {
             alert(error)
         });
     }
-
+    //event for card when we swiper right
     const swipeRight = (cardIndex) => {
         if(!profiles[cardIndex]) return;
 
