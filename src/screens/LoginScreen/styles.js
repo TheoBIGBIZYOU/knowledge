@@ -13,6 +13,7 @@ export default StyleSheet.create({
         flex: 1,
         height: 120,
         width: 90,
+        resizeMode: 'contain',
         alignSelf: "center",
         margin: 30
     },

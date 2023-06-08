@@ -59,7 +59,7 @@ export default function LoginScreen({navigation}) {
                 keyboardShouldPersistTaps="always">
                 <Image
                     style={styles.logo}
-                    source={require('../../../assets/icon.png')}
+                    source={require('../../../assets/img/knowledge.png')}
                 />
                 <Text style={styles.label}>Email</Text>
                 <TextInput
